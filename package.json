@@ -1,0 +1,14 @@
+{
+    "name": "photo-frame-slider",
+    "description": "Photo Slideshow",
+    "version": "0.0.1",
+    "author": "Ruud Verheijden",
+    "scripts": {
+        "start": "serve"
+    },
+    "dependencies": {},
+    "devDependencies": {
+        "serve": "^11.3.2"
+    },
+    "repository": "https://github.com/ruudverheijden/photo-frame-slider"
+}

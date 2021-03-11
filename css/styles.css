@@ -1,0 +1,10 @@
+.photo {
+   position: relative;
+   width: 60vw;
+   background-color: #DDD;
+   margin: 1vw;
+   border: 1vw solid white;
+   box-shadow: 0 0 1.5vw rgba(0,0,0,.4);
+   -moz-box-shadow: 0 0 1.5vw rgba(0,0,0,.4);
+   -webkit-box-shadow: 0 0 1.5vw rgba(0,0,0,.4);
+  }
