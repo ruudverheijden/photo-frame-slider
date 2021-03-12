@@ -6,7 +6,9 @@
     "scripts": {
         "start": "serve"
     },
-    "dependencies": {},
+    "dependencies": {
+        "animejs": "^3.2.1"
+    },
     "devDependencies": {
         "serve": "^11.3.2"
     },
