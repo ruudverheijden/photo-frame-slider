@@ -1,26 +1,27 @@
-let photos = document.querySelectorAll('.photo');
+let photos = [...document.querySelectorAll('.photo')]; // Convert Nodelist to Array
 
 // Spread photos vertically with a bit randomness (= spread evenly with +-5vh)
 for (let i = 0; i < photos.length; i++) {
-    photos[i].style.top = Math.floor( ( 100 / photos.length * i ) + ( ( Math.random() - 0.5 ) * 10 ) ) + "vh";
+    photos[i].style.top = getRandomizedNumber(100 / photos.length * i, 10) + "vh";
 }
 
-// Create timeline
-var tl = anime.timeline({
-    easing: 'easeOutExpo',
-    duration: 30000
-  });
-  
-  tl
-  .add({
-    targets: photos[0],
-    translateX: '100vw',
-  })
-  .add({
-    targets: photos[1],
-    translateX: '100vw',
-  }, 1000) // relative offset
-  .add({
-    targets: photos[2],
-    translateX: '100vw',
-  }, 4000); // absolute offset
+// Add all photos
+while (photos.length > 0) {
+    addPhotoToTimeline(photos.shift());
+}
+
+// Add a new photo to the animation timeline
+function addPhotoToTimeline (photo) {
+    anime({
+        targets: photo,
+        translateX: '100vw',
+        easing: 'easeInOutSine',
+        duration: 10000 + ( ( Math.random() - 0.5 ) * 2000 ),
+        delay: getRandomizedNumber(1000, 1000)
+    });
+}
+
+// Randomize an number with a maximum deviation
+function getRandomizedNumber(number, maxDeviation) {
+    return Math.floor ( number + ( ( Math.random() - 0.5 ) * maxDeviation ) );
+}
