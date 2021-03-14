@@ -1,22 +1,19 @@
 import anime from "animejs";
-import photos from "../photos.json";
 import { Photo } from "./model/photo";
+import photos from "../photos.json";
 
-let photoList: Photo[] = photos;
+const photoList: Photo[] = photos;
 
-const interval = setInterval(() => {
-    const nextPhoto: Photo | undefined = photoList.shift();
-    if (nextPhoto) {
-        const newPhotoElement: HTMLElement | null = createPhotoElement(nextPhoto.src, 'container');
-        if (newPhotoElement){
-            setPhotoVerticalPosition(newPhotoElement);
-            animatePhoto(newPhotoElement);
-        }
-    }
-}, 2000);
+// Randomize an number with a maximum deviation that is either subtracted or added
+function randomizeNumber(number: number, maxDeviation: number) {
+  return Math.floor(number + (Math.random() - 0.5) * 2 * maxDeviation);
+}
 
 // Create a new photo element inside a container element
-function createPhotoElement(src: string, containerId: string): HTMLElement | null {
+function createPhotoElement(
+  src: string,
+  containerId: string
+): HTMLElement | null {
   const container: HTMLElement | null = document.getElementById(containerId);
 
   if (container) {
@@ -43,10 +40,20 @@ function animatePhoto(photoElement: HTMLElement) {
 
 // Randomise photo vertically
 function setPhotoVerticalPosition(photoElement: HTMLElement) {
-  photoElement.style.top = randomizeNumber(40, 50) + "vh";
+  const element = photoElement;
+  element.style.top = `${randomizeNumber(40, 50)}vh`;
 }
 
-// Randomize an number with a maximum deviation that is either subtracted or added
-function randomizeNumber(number: number, maxDeviation: number) {
-  return Math.floor(number + (Math.random() - 0.5) * 2 * maxDeviation);
-}
+setInterval(() => {
+  const nextPhoto: Photo | undefined = photoList.shift();
+  if (nextPhoto) {
+    const newPhotoElement: HTMLElement | null = createPhotoElement(
+      nextPhoto.src,
+      "container"
+    );
+    if (newPhotoElement) {
+      setPhotoVerticalPosition(newPhotoElement);
+      animatePhoto(newPhotoElement);
+    }
+  }
+}, 2000);

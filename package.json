@@ -1,18 +1,72 @@
 {
-    "name": "photo-frame-slider",
-    "description": "Photo Slideshow",
-    "version": "0.0.1",
-    "author": "Ruud Verheijden",
-    "scripts": {
-        "start": "serve"
+  "name": "photo-frame-slider",
+  "description": "Photo Slideshow",
+  "version": "0.0.1",
+  "author": "Ruud Verheijden",
+  "scripts": {
+    "start": "serve"
+  },
+  "dependencies": {
+    "@types/animejs": "^3.1.2",
+    "animejs": "^3.2.1"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.17.0",
+    "@typescript-eslint/parser": "^4.17.0",
+    "eslint": "^7.22.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-prettier": "^3.3.1",
+    "prettier": "^2.2.1",
+    "serve": "^11.3.2",
+    "typescript": "^4.2.3"
+  },
+  "repository": "https://github.com/ruudverheijden/photo-frame-slider",
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "es6": true
     },
-    "dependencies": {
-        "@types/animejs": "^3.1.2",
-        "animejs": "^3.2.1"
+    "extends": [
+      "airbnb-base",
+      "prettier",
+      "plugin:prettier/recommended"
+    ],
+    "globals": {
+      "Atomics": "readonly",
+      "SharedArrayBuffer": "readonly"
     },
-    "devDependencies": {
-        "serve": "^11.3.2",
-        "typescript": "^4.2.3"
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "ecmaVersion": 2018,
+      "sourceType": "module"
     },
-    "repository": "https://github.com/ruudverheijden/photo-frame-slider"
+    "plugins": [
+      "@typescript-eslint",
+      "prettier"
+    ],
+    "rules": {
+      "prettier/prettier": "error",
+      "import/extensions": [
+        "error",
+        "ignorePackages",
+        {
+          "js": "never",
+          "jsx": "never",
+          "ts": "never",
+          "tsx": "never"
+        }
+      ]
+    },
+    "settings": {
+      "import/resolver": {
+        "node": {
+          "extensions": [
+            ".js",
+            ".ts"
+          ]
+        }
+      }
+    }
+  }
 }
