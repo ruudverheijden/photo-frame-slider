@@ -51,6 +51,7 @@ setInterval(() => {
       nextPhoto.src,
       "container"
     );
+
     if (newPhotoElement) {
       setPhotoVerticalPosition(newPhotoElement);
       animatePhoto(newPhotoElement);

@@ -4,7 +4,8 @@
   "version": "0.0.1",
   "author": "Ruud Verheijden",
   "scripts": {
-    "start": "serve"
+    "dev": "tsc --watch & serve",
+    "build": "tsc"
   },
   "dependencies": {
     "@types/animejs": "^3.1.2",
