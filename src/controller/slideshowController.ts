@@ -1,10 +1,11 @@
 import { Photo } from "../model/photo";
 
 export default class slideshowController {
-  model;
+  private model;
 
-  view;
+  private view;
 
+  // TODO: add types
   constructor(model: any, view: any) {
     this.model = model;
     this.view = view;
@@ -15,8 +16,7 @@ export default class slideshowController {
       const nextPhoto: Photo | undefined = this.model.photoList.shift();
       if (nextPhoto) {
         const newPhotoElement: HTMLElement | null = this.view.createPhotoElement(
-          nextPhoto.src,
-          "container"
+          nextPhoto.src
         );
 
         if (newPhotoElement) {

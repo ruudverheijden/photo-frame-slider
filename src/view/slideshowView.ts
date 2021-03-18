@@ -1,42 +1,56 @@
 import anime from "animejs";
 
 export default class slideshowView {
-  // Create a new photo element inside a container element
-  static createPhotoElement(
-    src: string,
-    containerId: string
-  ): HTMLElement | null {
-    const container: HTMLElement | null = document.getElementById(containerId);
+  private container: HTMLElement;
 
-    if (container) {
-      const newElement = document.createElement("img");
-      newElement.src = src;
-      newElement.className = "photo";
-      container.appendChild(newElement);
+  private elements: HTMLElement[];
 
-      return newElement;
+  constructor(container: HTMLElement | null) {
+    if (!container) {
+      throw new Error("Invalid Slideshow container HTML element");
     }
-    return null;
+
+    this.container = container;
+    this.elements = [];
+  }
+
+  // Create a new photo element inside a container element
+  createPhotoElement(src: string): number {
+    const newElement = document.createElement("img");
+    newElement.src = src;
+    newElement.className = "photo";
+    this.container.appendChild(newElement);
+
+    // Store element reference for quick reference
+    this.elements.push(newElement);
+
+    // Return index of last added element
+    return this.elements.length - 1;
+  }
+
+  // Get photo element based on array index id
+  getPhotoElementByIndex(index: number): HTMLElement {
+    return this.elements[index];
   }
 
   // Create animation for photo
-  static animatePhoto(photoElement: HTMLElement) {
+  animatePhoto(photoIndex: number): void {
     anime({
-      targets: photoElement,
+      targets: this.getPhotoElementByIndex(photoIndex),
       translateX: "100vw",
       easing: "easeInOutSine",
-      duration: this.randomizeNumber(10000, 2000),
-      delay: this.randomizeNumber(1000, 1000),
+      duration: slideshowView.randomizeNumber(10000, 2000),
+      delay: slideshowView.randomizeNumber(1000, 1000),
     });
   }
 
   // Randomise photo vertically
-  static setPhotoVerticalPosition(photoElement: HTMLElement) {
-    const element = photoElement;
-    element.style.top = `${this.randomizeNumber(40, 50)}vh`;
+  setPhotoVerticalPosition(photoIndex: number): void {
+    const element = this.getPhotoElementByIndex(photoIndex);
+    element.style.top = `${slideshowView.randomizeNumber(40, 50)}vh`;
   }
 
-  private static randomizeNumber(number: number, maxDeviation: number) {
+  private static randomizeNumber(number: number, maxDeviation: number): number {
     return Math.floor(number + (Math.random() - 0.5) * 2 * maxDeviation);
   }
 }
