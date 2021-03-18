@@ -7,8 +7,4 @@ export default class slideshowModel {
   constructor() {
     this.photoList = photos;
   }
-
-  getPhotoList() {
-    return this.photoList;
-  }
 }

@@ -1,5 +1,4 @@
 import anime from "animejs";
-import randomizeNumber from "../helper/helpers";
 
 export default class slideshowView {
   // Create a new photo element inside a container element
@@ -26,14 +25,18 @@ export default class slideshowView {
       targets: photoElement,
       translateX: "100vw",
       easing: "easeInOutSine",
-      duration: randomizeNumber(10000, 2000),
-      delay: randomizeNumber(1000, 1000),
+      duration: this.randomizeNumber(10000, 2000),
+      delay: this.randomizeNumber(1000, 1000),
     });
   }
 
   // Randomise photo vertically
   static setPhotoVerticalPosition(photoElement: HTMLElement) {
     const element = photoElement;
-    element.style.top = `${randomizeNumber(40, 50)}vh`;
+    element.style.top = `${this.randomizeNumber(40, 50)}vh`;
+  }
+
+  private static randomizeNumber(number: number, maxDeviation: number) {
+    return Math.floor(number + (Math.random() - 0.5) * 2 * maxDeviation);
   }
 }
