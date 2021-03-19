@@ -38,8 +38,7 @@ export default class slideshowController {
       const nextPhoto = this.getNextPhoto();
 
       if (nextPhoto) {
-        this.view.addNewPhoto(nextPhoto.photo.src, nextPhoto.id);
-        this.view.setPhotoVerticalPosition(nextPhoto.id);
+        this.view.addNewPhoto(nextPhoto.id, nextPhoto.photo.src);
         this.view.animatePhoto(nextPhoto.id);
       }
     }, 2000);
