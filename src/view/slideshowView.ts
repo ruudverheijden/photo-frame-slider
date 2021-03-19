@@ -4,7 +4,7 @@ import { PhotoReference } from "../model/models";
 export default class slideshowView {
   private container: HTMLElement;
 
-  private photoElements: Map<number, PhotoReference>;
+  private photos: Map<number, PhotoReference>;
 
   constructor(container: HTMLElement | null) {
     if (!container) {
@@ -12,12 +12,12 @@ export default class slideshowView {
     }
 
     this.container = container;
-    this.photoElements = new Map();
+    this.photos = new Map();
   }
 
   // Add a new photo to the slideshow
   addNewPhoto(id: number, src: string) {
-    if (!this.photoElements.has(id)) {
+    if (!this.photos.has(id)) {
       this.createPhotoElement(id, src);
       this.addPhotoElementToContainer(id);
     }
@@ -30,17 +30,13 @@ export default class slideshowView {
     newElement.className = "photo";
 
     // Store element reference for quick reference
-    this.photoElements.set(id, { element: newElement });
-  }
-
-  // Get photo element based on array index id
-  getPhotoElementById(id: number): HTMLElement | undefined {
-    return this.photoElements.get(id)?.element || undefined;
+    this.photos.set(id, { element: newElement });
   }
 
   // Add photo to container
   private addPhotoElementToContainer(id: number): void {
-    const photoElement: HTMLElement | undefined = this.getPhotoElementById(id);
+    const photoElement: HTMLElement | undefined =
+      this.photos.get(id)?.element || undefined;
 
     if (photoElement) {
       this.container.appendChild(photoElement);
@@ -49,21 +45,27 @@ export default class slideshowView {
 
   // Create animation for photo
   animatePhoto(id: number): void {
-    const photo = this.getPhotoElementById(id);
-    this.setPhotoStartPosition(id);
+    if (this.photos.has(id)) {
+      const photoReference = this.photos.get(id);
 
-    anime({
-      targets: photo,
-      translateX: "100vw",
-      easing: "easeInOutSine",
-      duration: slideshowView.randomizeNumber(10000, 2000),
-      delay: slideshowView.randomizeNumber(1000, 1000),
-    });
+      if (photoReference?.element) {
+        this.setPhotoStartPosition(id);
+
+        const animation = anime({
+          targets: photoReference?.element,
+          translateX: "100vw",
+          easing: "easeInOutSine",
+          duration: slideshowView.randomizeNumber(10000, 2000),
+          delay: slideshowView.randomizeNumber(1000, 1000),
+        });
+        this.photos.set(id, { ...photoReference, ...animation });
+      }
+    }
   }
 
   // Define photo start position by applying some randomisation
   private setPhotoStartPosition(id: number): void {
-    const photoElement = this.getPhotoElementById(id);
+    const photoElement = this.photos.get(id)?.element || undefined;
 
     if (photoElement) {
       photoElement.style.left = `${slideshowView.randomizeNumber(0, 5)}vw`;
