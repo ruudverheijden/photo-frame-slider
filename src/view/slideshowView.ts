@@ -22,8 +22,6 @@ export default class slideshowView {
       this.addPhotoElementToContainer(id);
     }
 
-    console.log(this.photos);
-
     // Start the animation if its not yet running
     if (!this.photos.get(id)?.animationActive) {
       this.animatePhoto(id);
