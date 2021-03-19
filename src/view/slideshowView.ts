@@ -22,6 +22,8 @@ export default class slideshowView {
       this.addPhotoElementToContainer(id);
     }
 
+    console.log(this.photos);
+
     // Start the animation if its not yet running
     if (!this.photos.get(id)?.animationActive) {
       this.animatePhoto(id);
@@ -98,13 +100,12 @@ export default class slideshowView {
             },
           });
 
-          animation.finished.then(() => {});
-
           // Store animation reference
           photoReference.animation = animation;
-          photoReference.animationActive = true;
-          this.photos.set(id, photoReference);
         }
+        // Store that animation is running
+        photoReference.animationActive = true;
+        this.photos.set(id, photoReference);
       }
     }
   }
