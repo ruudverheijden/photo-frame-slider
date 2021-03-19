@@ -15,11 +15,16 @@ export default class slideshowView {
     this.photos = new Map();
   }
 
-  // Add a new photo to the slideshow
-  addNewPhoto(id: number, src: string) {
+  // Add a photo to the slideshow and start the animation
+  addPhoto(id: number, src: string) {
     if (!this.photos.has(id)) {
       this.createPhotoElement(id, src);
       this.addPhotoElementToContainer(id);
+    }
+
+    // Start the animation if its not yet running
+    if (!this.photos.get(id)?.animationActive) {
+      this.animatePhoto(id);
     }
   }
 
@@ -27,7 +32,7 @@ export default class slideshowView {
   private createPhotoElement(id: number, src: string): void {
     const newElement = document.createElement("img");
     newElement.src = src;
-    newElement.id = `photo-${id}`;
+    newElement.dataset.photoId = `${id}`;
     newElement.className = "photo";
 
     // Store element reference for quick reference
@@ -36,12 +41,13 @@ export default class slideshowView {
 
   // Add photo to container
   private addPhotoElementToContainer(id: number): void {
-    const photoElement: HTMLElement | undefined =
-      this.photos.get(id)?.element || undefined;
+    const photoElement = this.photos.get(id)?.element;
 
-    if (photoElement) {
-      this.container.appendChild(photoElement);
+    if (!photoElement) {
+      throw new Error("Photo ID does not exist");
     }
+
+    this.container.appendChild(photoElement);
   }
 
   // Create animation for photo
@@ -52,7 +58,7 @@ export default class slideshowView {
       if (photoReference?.element) {
         this.setPhotoStartPosition(id);
 
-        // Restart animation if it was already ran before
+        // Restart animation if it was already ran before and is currently not running
         if (photoReference.animation) {
           photoReference.animation.restart();
         } else {
@@ -65,12 +71,38 @@ export default class slideshowView {
             rotate: `${slideshowView.randomizeNumber(0, 10)}deg`,
             scale: slideshowView.randomizeNumber(1.0, 0.3, false),
             easing: "easeInOutSine",
-            duration: slideshowView.randomizeNumber(10000, 2000),
+            duration: slideshowView.randomizeNumber(30000, 2000),
             delay: slideshowView.randomizeNumber(1000, 1000),
+            complete: (anim) => {
+              if (
+                anim.animatables &&
+                anim.animatables[0] &&
+                anim.animatables[0].target &&
+                anim.animatables[0].target.dataset &&
+                anim.animatables[0].target.dataset.photoId
+              ) {
+                const photoId = parseInt(
+                  anim.animatables[0].target.dataset.photoId,
+                  10
+                );
+
+                const photoElement = this.photos.get(photoId);
+
+                if (!photoElement) {
+                  throw new Error("Photo ID does not exist");
+                }
+
+                photoElement.animationActive = false;
+                this.photos.set(photoId, photoElement);
+              }
+            },
           });
+
+          animation.finished.then(() => {});
 
           // Store animation reference
           photoReference.animation = animation;
+          photoReference.animationActive = true;
           this.photos.set(id, photoReference);
         }
       }
@@ -79,12 +111,14 @@ export default class slideshowView {
 
   // Define photo start position by applying some randomisation
   private setPhotoStartPosition(id: number): void {
-    const photoElement = this.photos.get(id)?.element || undefined;
+    const photoElement = this.photos.get(id)?.element;
 
-    if (photoElement) {
-      photoElement.style.left = `-${photoElement.offsetWidth}px`;
-      photoElement.style.top = `${slideshowView.randomizeNumber(40, 50)}vh`;
+    if (!photoElement) {
+      throw new Error("Photo ID does not exist");
     }
+
+    photoElement.style.left = `-${photoElement.offsetWidth}px`;
+    photoElement.style.top = `${slideshowView.randomizeNumber(40, 50)}vh`;
   }
 
   // Randomise number with a maximum deviation, defaults to convert to integer
