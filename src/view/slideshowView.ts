@@ -51,17 +51,22 @@ export default class slideshowView {
       if (photoReference?.element) {
         this.setPhotoStartPosition(id);
 
-        const animation = anime({
-          targets: photoReference?.element,
-          translateX: "100vw",
-          easing: "easeInOutSine",
-          duration: slideshowView.randomizeNumber(10000, 2000),
-          delay: slideshowView.randomizeNumber(1000, 1000),
-        });
+        // Restart animation if it was already ran before
+        if (photoReference.animation) {
+          photoReference.animation.restart();
+        } else {
+          const animation = anime({
+            targets: photoReference?.element,
+            translateX: "100vw",
+            easing: "easeInOutSine",
+            duration: slideshowView.randomizeNumber(10000, 2000),
+            delay: slideshowView.randomizeNumber(1000, 1000),
+          });
 
-        // Store animation reference
-        photoReference.animation = animation;
-        this.photos.set(id, photoReference);
+          // Store animation reference
+          photoReference.animation = animation;
+          this.photos.set(id, photoReference);
+        }
       }
     }
   }
