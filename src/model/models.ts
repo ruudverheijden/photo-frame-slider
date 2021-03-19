@@ -11,6 +11,6 @@ export interface PhotoWithId {
 }
 
 export interface PhotoReference {
-  element: HTMLElement;
+  element?: HTMLElement;
   animation?: AnimeInstance;
 }

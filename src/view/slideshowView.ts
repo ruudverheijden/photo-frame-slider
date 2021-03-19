@@ -58,7 +58,10 @@ export default class slideshowView {
           duration: slideshowView.randomizeNumber(10000, 2000),
           delay: slideshowView.randomizeNumber(1000, 1000),
         });
-        this.photos.set(id, { ...photoReference, ...animation });
+
+        // Store animation reference
+        photoReference.animation = animation;
+        this.photos.set(id, photoReference);
       }
     }
   }
