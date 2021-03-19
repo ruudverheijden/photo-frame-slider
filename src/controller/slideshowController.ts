@@ -1,28 +1,46 @@
-import { Photo } from "../model/photo";
+import { PhotoWithId } from "../model/models";
+import slideshowModel from "../model/slideshowModel";
+import slideshowView from "../view/slideshowView";
 
 export default class slideshowController {
-  private model;
+  private model: slideshowModel;
 
-  private view;
+  private view: slideshowView;
 
-  // TODO: add types
-  constructor(model: any, view: any) {
+  private photoIds: number[] = [];
+
+  private photoIdsIndexCounter: number = 0;
+
+  constructor(model: slideshowModel, view: slideshowView) {
     this.model = model;
     this.view = view;
+    this.photoIds = this.model.getPhotoListIds();
   }
 
+  // Get the next photo based on index counter
+  private getNextPhoto(): PhotoWithId {
+    const nextPhoto = this.model.getPhotoById(this.photoIdsIndexCounter);
+    const result = { photo: nextPhoto, id: this.photoIdsIndexCounter };
+
+    // Set index counter for next run
+    this.photoIdsIndexCounter += 1;
+
+    if (this.photoIdsIndexCounter >= this.photoIds.length) {
+      this.photoIdsIndexCounter = 0;
+    }
+
+    return result;
+  }
+
+  // Start the slideshow
   start() {
     setInterval(() => {
-      const nextPhoto: Photo | undefined = this.model.photoList.shift();
-      if (nextPhoto) {
-        const newPhotoElement: HTMLElement | null = this.view.createPhotoElement(
-          nextPhoto.src
-        );
+      const nextPhoto = this.getNextPhoto();
 
-        if (newPhotoElement) {
-          this.view.setPhotoVerticalPosition(newPhotoElement);
-          this.view.animatePhoto(newPhotoElement);
-        }
+      if (nextPhoto) {
+        this.view.addNewPhoto(nextPhoto.photo.src, nextPhoto.id);
+        this.view.setPhotoVerticalPosition(nextPhoto.id);
+        this.view.animatePhoto(nextPhoto.id);
       }
     }, 2000);
   }

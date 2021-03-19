@@ -3,7 +3,7 @@ import anime from "animejs";
 export default class slideshowView {
   private container: HTMLElement;
 
-  private elements: HTMLElement[];
+  private photoElements: Map<number, HTMLElement>;
 
   constructor(container: HTMLElement | null) {
     if (!container) {
@@ -11,32 +11,43 @@ export default class slideshowView {
     }
 
     this.container = container;
-    this.elements = [];
+    this.photoElements = new Map();
   }
 
-  // Create a new photo element inside a container element
-  createPhotoElement(src: string): number {
+  // Add a new photo to the slideshow
+  addNewPhoto(src: string, id: number) {
+    this.createPhotoElement(src, id);
+    this.addPhotoElementToContainer(id);
+  }
+
+  // Create a new photo html element
+  private createPhotoElement(src: string, id: number): void {
     const newElement = document.createElement("img");
     newElement.src = src;
     newElement.className = "photo";
-    this.container.appendChild(newElement);
 
     // Store element reference for quick reference
-    this.elements.push(newElement);
-
-    // Return index of last added element
-    return this.elements.length - 1;
+    this.photoElements.set(id, newElement);
   }
 
   // Get photo element based on array index id
-  getPhotoElementByIndex(index: number): HTMLElement {
-    return this.elements[index];
+  getPhotoElementById(id: number): HTMLElement | undefined {
+    return this.photoElements.get(id) || undefined;
+  }
+
+  // Add photo to container
+  private addPhotoElementToContainer(id: number): void {
+    const photoElement: HTMLElement | undefined = this.getPhotoElementById(id);
+
+    if (photoElement) {
+      this.container.appendChild(photoElement);
+    }
   }
 
   // Create animation for photo
-  animatePhoto(photoIndex: number): void {
+  animatePhoto(id: number): void {
     anime({
-      targets: this.getPhotoElementByIndex(photoIndex),
+      targets: this.getPhotoElementById(id),
       translateX: "100vw",
       easing: "easeInOutSine",
       duration: slideshowView.randomizeNumber(10000, 2000),
@@ -45,9 +56,12 @@ export default class slideshowView {
   }
 
   // Randomise photo vertically
-  setPhotoVerticalPosition(photoIndex: number): void {
-    const element = this.getPhotoElementByIndex(photoIndex);
-    element.style.top = `${slideshowView.randomizeNumber(40, 50)}vh`;
+  setPhotoVerticalPosition(id: number): void {
+    const photoElement = this.getPhotoElementById(id);
+
+    if (photoElement) {
+      photoElement.style.top = `${slideshowView.randomizeNumber(40, 50)}vh`;
+    }
   }
 
   private static randomizeNumber(number: number, maxDeviation: number): number {
