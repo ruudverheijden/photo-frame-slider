@@ -10,7 +10,7 @@ export interface PhotoWithId {
   photo: Photo;
 }
 
-export interface PhotoReference {
+export interface PhotoReference extends Photo {
   element: HTMLElement;
   animation?: AnimeInstance;
   animationActive?: boolean;

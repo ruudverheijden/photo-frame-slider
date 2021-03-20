@@ -11,6 +11,8 @@ export default class slideshowController {
 
   private photoIdsIndexCounter: number = 0;
 
+  private intervalCounter: number = 0;
+
   constructor(model: slideshowModel, view: slideshowView) {
     this.model = model;
     this.view = view;
@@ -38,8 +40,19 @@ export default class slideshowController {
       const nextPhoto = this.getNextPhoto();
 
       if (nextPhoto) {
-        this.view.addPhoto(nextPhoto.id, nextPhoto.photo.src);
+        this.view.addPhoto(
+          nextPhoto.id,
+          nextPhoto.photo.src,
+          nextPhoto.photo.title
+        );
       }
+
+      // Change background every 5 intervals
+      if (this.intervalCounter === 1 || this.intervalCounter % 5 === 0) {
+        this.view.setRandomBackgroundPhoto();
+      }
+
+      this.intervalCounter += 1;
     }, 2000);
   }
 }

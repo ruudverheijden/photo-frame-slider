@@ -1,8 +1,12 @@
-import anime from "animejs";
+import anime, { AnimeInstance } from "animejs";
 import { PhotoReference } from "../model/models";
 
 export default class slideshowView {
   private container: HTMLElement;
+
+  private backgroundElement: HTMLElement;
+
+  private backgroundAnimation: AnimeInstance | undefined;
 
   private photos: Map<number, PhotoReference>;
 
@@ -12,15 +16,18 @@ export default class slideshowView {
     }
 
     this.container = container;
+    this.backgroundElement = this.createBackgroundElement();
     this.photos = new Map();
   }
 
   // Add a photo to the slideshow and start the animation
-  async addPhoto(id: number, src: string) {
+  async addPhoto(id: number, src: string, title: string | undefined) {
     if (!this.photos.has(id)) {
       // Await for the image element to have loaded
-      await this.createPhotoElement(id, src);
-      this.addPhotoElementToContainer(id);
+      const element = await this.createPhotoElement(id, src);
+
+      // Store element reference for quick reference
+      this.photos.set(id, { src, title, element });
     }
 
     // Start the animation if its not yet running
@@ -38,21 +45,8 @@ export default class slideshowView {
       newElement.className = "photo";
       newElement.onload = () => resolve(newElement);
       newElement.onerror = reject;
-
-      // Store element reference for quick reference
-      this.photos.set(id, { element: newElement });
+      this.container.appendChild(newElement);
     });
-  }
-
-  // Add photo to container
-  private addPhotoElementToContainer(id: number): void {
-    const photoElement = this.photos.get(id)?.element;
-
-    if (!photoElement) {
-      throw new Error("Photo ID does not exist");
-    }
-
-    this.container.appendChild(photoElement);
   }
 
   // Create animation for photo
@@ -110,6 +104,32 @@ export default class slideshowView {
         photoReference.animationActive = true;
         this.photos.set(id, photoReference);
       }
+    }
+  }
+
+  // Create an element to display the background photo in
+  private createBackgroundElement(): HTMLElement {
+    const newElement = document.createElement("div");
+    newElement.className = "background-photo";
+    this.container.appendChild(newElement);
+    return newElement;
+  }
+
+  // Set background using a random photo that is already in the photos list
+  setRandomBackgroundPhoto(): void {
+    const randomId: number = Math.floor(Math.random() * this.photos.size);
+    const photo = this.photos.get(randomId);
+
+    if (photo?.src) {
+      this.backgroundElement.style.backgroundImage = `url("${photo?.src}")`;
+      this.backgroundElement.style.opacity = "0";
+
+      this.backgroundAnimation = anime({
+        targets: this.backgroundElement,
+        opacity: 1,
+        easing: "easeInOutSine",
+        duration: 10000,
+      });
     }
   }
 
