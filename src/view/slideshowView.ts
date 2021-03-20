@@ -16,9 +16,10 @@ export default class slideshowView {
   }
 
   // Add a photo to the slideshow and start the animation
-  addPhoto(id: number, src: string) {
+  async addPhoto(id: number, src: string) {
     if (!this.photos.has(id)) {
-      this.createPhotoElement(id, src);
+      // Await for the image element to have loaded
+      await this.createPhotoElement(id, src);
       this.addPhotoElementToContainer(id);
     }
 
@@ -28,15 +29,19 @@ export default class slideshowView {
     }
   }
 
-  // Create a new photo html element
-  private createPhotoElement(id: number, src: string): void {
-    const newElement = document.createElement("img");
-    newElement.src = src;
-    newElement.dataset.photoId = `${id}`;
-    newElement.className = "photo";
+  // Promise to create new photo html element
+  private createPhotoElement(id: number, src: string): Promise<HTMLElement> {
+    return new Promise((resolve, reject) => {
+      const newElement = document.createElement("img");
+      newElement.src = src;
+      newElement.dataset.photoId = `${id}`;
+      newElement.className = "photo";
+      newElement.onload = () => resolve(newElement);
+      newElement.onerror = reject;
 
-    // Store element reference for quick reference
-    this.photos.set(id, { element: newElement });
+      // Store element reference for quick reference
+      this.photos.set(id, { element: newElement });
+    });
   }
 
   // Add photo to container
@@ -58,7 +63,7 @@ export default class slideshowView {
       if (photoReference?.element) {
         this.setPhotoStartPosition(id);
 
-        // Restart animation if it was already ran before and is currently not running
+        // Restart animation if it was already ran before
         if (photoReference.animation) {
           photoReference.animation.restart();
         } else {
@@ -71,7 +76,7 @@ export default class slideshowView {
             rotate: `${slideshowView.randomizeNumber(0, 10)}deg`,
             scale: slideshowView.randomizeNumber(1.0, 0.3, false),
             easing: "easeInOutSine",
-            duration: slideshowView.randomizeNumber(30000, 2000),
+            duration: slideshowView.randomizeNumber(10000, 2000),
             delay: slideshowView.randomizeNumber(1000, 1000),
             complete: (anim) => {
               if (
@@ -116,8 +121,15 @@ export default class slideshowView {
       throw new Error("Photo ID does not exist");
     }
 
+    // Chose random top position within container height, assuming container height is larger that photo height
+    const usableHeight =
+      this.container.offsetHeight - photoElement.offsetHeight;
+    const randomPosition = Math.floor(Math.random() * usableHeight);
+
     photoElement.style.left = `-${photoElement.offsetWidth}px`;
-    photoElement.style.top = `${slideshowView.randomizeNumber(40, 50)}vh`;
+    photoElement.style.top = `${
+      randomPosition + slideshowView.randomizeNumber(0, 50)
+    }px`;
   }
 
   // Randomise number with a maximum deviation, defaults to convert to integer
