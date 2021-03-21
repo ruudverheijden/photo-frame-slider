@@ -1,28 +1,31 @@
 [
     {
-        "src": "https://picsum.photos/id/1/800/450",
-        "title": "Mijn eerste foto"
+        "src": "../photos/example-photo1-from-unsplash.jpg",
+        "title": "Trip to Africa"
     },
     {
-        "src": "https://picsum.photos/id/234/800/450",
-        "title": "Mijn tweede foto"
+        "src": "../photos/example-photo2-from-unsplash.jpg"
     },
     {
-        "src": "https://picsum.photos/id/456/800/450",
-        "title": "Mijn derde foto"
+        "src": "../photos/example-photo3-from-unsplash.jpg",
+        "title": "Camping"
     },
     {
-        "src": "https://picsum.photos/id/789/800/450"
+        "src": "../photos/example-photo4-from-unsplash.jpg",
+        "title": "Walking on water..."
     },
     {
-        "src": "https://picsum.photos/id/235/800/450"
+        "src": "../photos/example-photo5-from-unsplash.jpg"
     },
     {
-        "src": "https://picsum.photos/id/236/800/450",
-        "title": "Mijn foto #236"
+        "src": "../photos/example-photo6-from-unsplash.jpg",
+        "title": "My holiday in Venice"
     },
     {
-        "src": "https://picsum.photos/id/237/800/450",
-        "title": "Mijn foto #237"
+        "src": "../photos/example-photo7-from-unsplash.jpg"
+    },
+    {
+        "src": "../photos/example-photo8-from-unsplash.jpg",
+        "title": "Mountain view"
     }
 ]
