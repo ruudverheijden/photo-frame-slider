@@ -26,7 +26,7 @@ html {
 
 .photo {
   position: absolute;
-  top: 0;
+  top: -1000vw;
   width: 40vw;
   background-color: #ddd;
   border: 1vw solid white;
