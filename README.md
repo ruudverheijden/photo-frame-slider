@@ -13,3 +13,13 @@ npm run build
 // Run in development mode:
 npm start
 ```
+
+## How to run with Docker
+
+```javascript
+// Build Docker image
+npm run build-docker
+
+// Build Docker image
+docker run -d -p 8000:80 photo-frame-slider
+```
