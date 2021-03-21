@@ -45,6 +45,9 @@ export default class slideshowView {
       newElement.className = "photo";
       newElement.onload = () => resolve(newElement);
       newElement.onerror = reject;
+      newElement.onclick = () => {
+        this.togglePauseAnimation(id);
+      };
       this.container.appendChild(newElement);
     });
   }
@@ -160,5 +163,21 @@ export default class slideshowView {
   ): number {
     const randomised = number + (Math.random() - 0.5) * 2 * maxDeviation;
     return toInteger ? Math.floor(randomised) : randomised;
+  }
+
+  // Click event handler to pause photo animation
+  private togglePauseAnimation(id: number) {
+    const photo = this.photos.get(id);
+
+    if (!photo || !photo.animation) {
+      throw new Error("Unknown photo ID");
+    }
+
+    if (!photo.animation.paused) {
+      photo.element.style.zIndex = "999";
+      photo.animation.pause();
+    } else {
+      photo.animation.play();
+    }
   }
 }
