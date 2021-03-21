@@ -1,3 +1,4 @@
+import "./css/styles.css";
 import SlideshowModel from "./model/slideshowModel";
 import SlideshowView from "./view/slideshowView";
 import SlideshowController from "./controller/slideshowController";
