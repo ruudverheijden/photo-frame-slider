@@ -177,6 +177,7 @@ export default class slideshowView {
       photo.element.style.zIndex = "999";
       photo.animation.pause();
     } else {
+      photo.element.style.zIndex = "auto";
       photo.animation.play();
     }
   }
