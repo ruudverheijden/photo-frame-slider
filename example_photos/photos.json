@@ -1,0 +1,31 @@
+[
+    {
+        "src": "example-photo1-from-unsplash.jpg",
+        "title": "Trip to Africa"
+    },
+    {
+        "src": "example-photo2-from-unsplash.jpg"
+    },
+    {
+        "src": "example-photo3-from-unsplash.jpg",
+        "title": "Camping"
+    },
+    {
+        "src": "example-photo4-from-unsplash.jpg",
+        "title": "Walking on water..."
+    },
+    {
+        "src": "example-photo5-from-unsplash.jpg"
+    },
+    {
+        "src": "example-photo6-from-unsplash.jpg",
+        "title": "My holiday in Venice"
+    },
+    {
+        "src": "example-photo7-from-unsplash.jpg"
+    },
+    {
+        "src": "example-photo8-from-unsplash.jpg",
+        "title": "Mountain view"
+    }
+]
