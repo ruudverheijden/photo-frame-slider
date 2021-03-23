@@ -15,6 +15,7 @@ export default class slideshowController {
 
   constructor(model: slideshowModel, view: slideshowView) {
     this.model = model;
+    this.model.loadPhotoList("./photos/");
     this.view = view;
     this.photoIds = this.model.getPhotoListIds();
   }

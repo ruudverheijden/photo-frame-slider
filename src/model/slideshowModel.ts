@@ -1,11 +1,27 @@
 import { Photo } from "./models";
-import photos from "../../photos.json";
 
 export default class slideshowModel {
-  private photoList: Photo[];
+  private photoList: any; // Photo[];
+
+  private photoPath: string;
 
   constructor() {
-    this.photoList = photos;
+    this.photoList = [];
+  }
+
+  async loadPhotoList(photoPath: string) {
+    this.photoPath = photoPath;
+    return fetch(`${photoPath}/photos.json`)
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+        this.photoList = data;
+      })
+      .catch((error) => {
+        console.log(`Error: ${error}`);
+      });
   }
 
   // Return a list of with IDs of all photos
