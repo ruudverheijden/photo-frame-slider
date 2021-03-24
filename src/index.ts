@@ -3,15 +3,12 @@ import SlideshowModel from "./model/slideshowModel";
 import SlideshowView from "./view/slideshowView";
 import SlideshowController from "./controller/slideshowController";
 
-async function initSlideShowModel(): Promise<SlideshowModel> {
+async function initSlideshow(): Promise<SlideshowController> {
   const slideshowModel = new SlideshowModel();
   await slideshowModel.loadPhotoList("./photos/");
-  return slideshowModel;
-}
 
-async function initSlideshow(): Promise<SlideshowController> {
   return new SlideshowController(
-    await initSlideShowModel(),
+    slideshowModel,
     new SlideshowView(document.getElementById("container"))
   );
 }
