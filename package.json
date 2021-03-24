@@ -6,7 +6,7 @@
   "scripts": {
     "start": "webpack serve --open",
     "build": "webpack build",
-    "build-docker": "webpack build ; docker build -t photo-frame-slider ."
+    "build-docker": "webpack build ; docker build -t photo-frame-slider:${npm_package_version} ."
   },
   "dependencies": {
     "@types/animejs": "^3.1.2",
