@@ -1,9 +1,9 @@
 import { Photo } from "./models";
 
 export default class slideshowModel {
-  private photoList: any; // Photo[];
+  private photoList: Photo[];
 
-  private photoPath: string;
+  private photoPath: string | undefined;
 
   constructor() {
     this.photoList = [];
@@ -16,8 +16,15 @@ export default class slideshowModel {
         return response.json();
       })
       .then((data) => {
-        console.log(data);
-        this.photoList = data;
+        data.forEach((element: Photo) => {
+          if (element.src) {
+            this.photoList.push({
+              src: this.photoPath + element.src,
+              title: element.title || undefined,
+            });
+          }
+        });
+        console.log(this.photoList);
       })
       .catch((error) => {
         console.log(`Error: ${error}`);
