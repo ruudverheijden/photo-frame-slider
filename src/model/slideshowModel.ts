@@ -9,8 +9,10 @@ export default class slideshowModel {
     this.photoList = [];
   }
 
-  async loadPhotoList(photoPath: string) {
+  // Load the list of photos async from the specified path
+  public async loadPhotoList(photoPath: string) {
     this.photoPath = photoPath;
+
     return fetch(`${photoPath}/photos.json`)
       .then((response) => {
         return response.json();
@@ -24,10 +26,11 @@ export default class slideshowModel {
             });
           }
         });
-        console.log(this.photoList);
       })
       .catch((error) => {
-        console.log(`Error: ${error}`);
+        throw new Error(
+          `Cannot load photos config from ${photoPath}/photos.json because of: ${error}`
+        );
       });
   }
 
@@ -40,6 +43,7 @@ export default class slideshowModel {
     return photoIds;
   }
 
+  // Get a specific photo based on it ID
   getPhotoById(id: number): Photo {
     return this.photoList[id];
   }
