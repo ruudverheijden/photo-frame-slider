@@ -20,6 +20,6 @@ npm start
 // Build Docker image
 npm run build-docker
 
-// Build Docker image
-docker run -d -p 8000:80 photo-frame-slider
+// Run Docker image
+docker run --name photoFrameSlider -d -p 8001:80 -v /myPhotoDir:/usr/share/nginx/html/photos:ro photo-frame-slider
 ```

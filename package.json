@@ -5,8 +5,8 @@
   "author": "Ruud Verheijden",
   "scripts": {
     "start": "webpack serve --open",
-    "build": "webpack",
-    "build-docker": "docker build -t photo-frame-slider ."
+    "build": "webpack build",
+    "build-docker": "webpack build ; docker build -t photo-frame-slider ."
   },
   "dependencies": {
     "@types/animejs": "^3.1.2",
