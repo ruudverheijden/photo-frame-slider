@@ -3,9 +3,17 @@ import SlideshowModel from "./model/slideshowModel";
 import SlideshowView from "./view/slideshowView";
 import SlideshowController from "./controller/slideshowController";
 
-const slideshow = new SlideshowController(
-  new SlideshowModel(),
-  new SlideshowView(document.getElementById("container"))
-);
+async function initSlideShowModel(): Promise<SlideshowModel> {
+  const slideshowModel = new SlideshowModel();
+  await slideshowModel.loadPhotoList("./photos/");
+  return slideshowModel;
+}
 
-slideshow.start();
+async function initSlideshow(): Promise<SlideshowController> {
+  return new SlideshowController(
+    await initSlideShowModel(),
+    new SlideshowView(document.getElementById("container"))
+  );
+}
+
+initSlideshow();
