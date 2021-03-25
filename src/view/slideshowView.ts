@@ -1,4 +1,5 @@
 import anime, { AnimeInstance } from "animejs";
+import randomizeNumber from "../helper/helpers";
 import { PhotoReference } from "../model/models";
 
 export default class slideshowView {
@@ -86,11 +87,11 @@ export default class slideshowView {
       targets: element,
       // Make sure photo ends out of the container, even if it's rotated
       translateX: `${this.container.offsetWidth + element.offsetWidth * 1.3}px`,
-      rotate: `${slideshowView.randomizeNumber(0, 10)}deg`,
-      scale: slideshowView.randomizeNumber(1.0, 0.3, false),
+      rotate: `${randomizeNumber(0, 10)}deg`,
+      scale: randomizeNumber(1.0, 0.3, false),
       easing: "easeInOutSine",
-      duration: slideshowView.randomizeNumber(10000, 2000),
-      delay: slideshowView.randomizeNumber(1000, 1000),
+      duration: randomizeNumber(10000, 2000),
+      delay: randomizeNumber(1000, 1000),
       complete: (anim) => {
         if (anim.animatables[0]?.target?.dataset?.photoId) {
           const photoId = parseInt(
@@ -151,19 +152,7 @@ export default class slideshowView {
     const randomPosition = Math.floor(Math.random() * usableHeight);
 
     photoElement.style.left = `-${photoElement.offsetWidth}px`;
-    photoElement.style.top = `${
-      randomPosition + slideshowView.randomizeNumber(0, 50)
-    }px`;
-  }
-
-  // Randomise number with a maximum deviation, defaults to convert to integer
-  private static randomizeNumber(
-    number: number,
-    maxDeviation: number,
-    toInteger: boolean = true
-  ): number {
-    const randomised = number + (Math.random() - 0.5) * 2 * maxDeviation;
-    return toInteger ? Math.floor(randomised) : randomised;
+    photoElement.style.top = `${randomPosition + randomizeNumber(0, 50)}px`;
   }
 
   // Pause animation of all photos and highlight specific photo
