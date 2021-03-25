@@ -24,17 +24,20 @@ export default class slideshowView {
 
   // Add a photo to the slideshow and start the animation
   async addPhoto(id: number, src: string, title: string | undefined) {
-    if (!this.photos.has(id)) {
-      // Await for the image element to have loaded
-      const element = await this.createPhotoElement(id, src);
+    // Don't add photos when highlight is active
+    if (!this.highlightedPhoto) {
+      if (!this.photos.has(id)) {
+        // Await for the image element to have loaded
+        const element = await this.createPhotoElement(id, src);
 
-      // Store element reference for quick reference
-      this.photos.set(id, { src, title, element });
-    }
+        // Store element reference for quick reference
+        this.photos.set(id, { src, title, element });
+      }
 
-    // Start the animation if its not yet running
-    if (!this.photos.get(id)?.animationActive) {
-      this.animatePhoto(id);
+      // Start the animation if its not yet running
+      if (!this.photos.get(id)?.animationActive) {
+        this.animatePhoto(id);
+      }
     }
   }
 
@@ -78,13 +81,7 @@ export default class slideshowView {
             duration: slideshowView.randomizeNumber(10000, 2000),
             delay: slideshowView.randomizeNumber(1000, 1000),
             complete: (anim) => {
-              if (
-                anim.animatables &&
-                anim.animatables[0] &&
-                anim.animatables[0].target &&
-                anim.animatables[0].target.dataset &&
-                anim.animatables[0].target.dataset.photoId
-              ) {
+              if (anim.animatables[0]?.target?.dataset?.photoId) {
                 const photoId = parseInt(
                   anim.animatables[0].target.dataset.photoId,
                   10
