@@ -8,6 +8,8 @@ export default class slideshowView {
 
   private backgroundAnimation: AnimeInstance | undefined;
 
+  private highlightedPhoto: PhotoReference | undefined;
+
   private photos: Map<number, PhotoReference>;
 
   constructor(container: HTMLElement | null) {
@@ -46,7 +48,7 @@ export default class slideshowView {
       newElement.onload = () => resolve(newElement);
       newElement.onerror = reject;
       newElement.onclick = () => {
-        this.togglePauseAnimation(id);
+        this.highlightPhoto(id);
       };
       this.container.appendChild(newElement);
     });
@@ -165,20 +167,48 @@ export default class slideshowView {
     return toInteger ? Math.floor(randomised) : randomised;
   }
 
-  // Click event handler to pause photo animation
-  private togglePauseAnimation(id: number) {
+  // Pause animation of all photos and highlight specific photo
+  private highlightPhoto(id: number) {
     const photo = this.photos.get(id);
 
     if (!photo || !photo.animation) {
       throw new Error("Unknown photo ID");
     }
 
-    if (!photo.animation.paused) {
+    if (!this.highlightedPhoto) {
+      // Pause all currently animated photos and start highlight animation
+      this.photos.forEach((value: PhotoReference) => {
+        if (value.animationActive && !value.animation?.paused) {
+          value.animation?.pause();
+        }
+      });
+
       photo.element.style.zIndex = "999";
-      photo.animation.pause();
+
+      // Animate photo and zoom to center of screen
+      anime({
+        targets: photo.element,
+        scale: 2,
+        top: `${
+          this.container.offsetHeight / 2 - photo.element.offsetHeight / 2
+        }px`,
+        left: `${
+          this.container.offsetWidth / 2 - photo.element.offsetWidth / 2
+        }px`,
+        translateX: 0,
+        easing: "easeInOutSine",
+        duration: 2000,
+      });
+
+      this.highlightedPhoto = photo;
     } else {
-      photo.element.style.zIndex = "auto";
-      photo.animation.play();
+      // Resume all photo animations and remove highlight animation
+      this.highlightedPhoto.element.style.zIndex = "initial";
+      this.highlightedPhoto = undefined;
+
+      this.photos.forEach((value: PhotoReference) => {
+        value.animation?.play();
+      });
     }
   }
 }
