@@ -36,6 +36,7 @@ export default class slideshowView {
 
       // Start the animation if its not yet running
       if (!this.photos.get(id)?.animationActive) {
+        this.setPhotoStartPosition(id);
         this.animatePhoto(id);
       }
     }
@@ -59,54 +60,55 @@ export default class slideshowView {
 
   // Create animation for photo
   animatePhoto(id: number): void {
-    if (this.photos.has(id)) {
-      const photoReference = this.photos.get(id);
+    const photoReference = this.photos.get(id);
 
-      if (photoReference?.element) {
-        this.setPhotoStartPosition(id);
-
-        // Restart animation if it was already ran before
-        if (photoReference.animation) {
-          photoReference.animation.restart();
-        } else {
-          const animation = anime({
-            targets: photoReference?.element,
-            translateX: `${
-              this.container.offsetWidth +
-              photoReference.element.offsetWidth * 1.3
-            }px`, // Make sure photo ends out of the container, even if it's rotated
-            rotate: `${slideshowView.randomizeNumber(0, 10)}deg`,
-            scale: slideshowView.randomizeNumber(1.0, 0.3, false),
-            easing: "easeInOutSine",
-            duration: slideshowView.randomizeNumber(10000, 2000),
-            delay: slideshowView.randomizeNumber(1000, 1000),
-            complete: (anim) => {
-              if (anim.animatables[0]?.target?.dataset?.photoId) {
-                const photoId = parseInt(
-                  anim.animatables[0].target.dataset.photoId,
-                  10
-                );
-
-                const photoElement = this.photos.get(photoId);
-
-                if (!photoElement) {
-                  throw new Error("Photo ID does not exist");
-                }
-
-                photoElement.animationActive = false;
-                this.photos.set(photoId, photoElement);
-              }
-            },
-          });
-
-          // Store animation reference
-          photoReference.animation = animation;
-        }
-        // Store that animation is running
-        photoReference.animationActive = true;
-        this.photos.set(id, photoReference);
-      }
+    if (!photoReference?.element) {
+      throw new Error("Missing html element");
     }
+
+    // Restart animation if it was already created before on this photo
+    if (photoReference.animation) {
+      photoReference.animation.restart();
+    } else {
+      const animation = this.createSlideAnimation(photoReference?.element);
+
+      // Store animation reference
+      photoReference.animation = animation;
+    }
+    // Store that animation is running
+    photoReference.animationActive = true;
+    this.photos.set(id, photoReference);
+  }
+
+  // Create a slide animation
+  private createSlideAnimation(element: HTMLElement) {
+    return anime({
+      targets: element,
+      // Make sure photo ends out of the container, even if it's rotated
+      translateX: `${this.container.offsetWidth + element.offsetWidth * 1.3}px`,
+      rotate: `${slideshowView.randomizeNumber(0, 10)}deg`,
+      scale: slideshowView.randomizeNumber(1.0, 0.3, false),
+      easing: "easeInOutSine",
+      duration: slideshowView.randomizeNumber(10000, 2000),
+      delay: slideshowView.randomizeNumber(1000, 1000),
+      complete: (anim) => {
+        if (anim.animatables[0]?.target?.dataset?.photoId) {
+          const photoId = parseInt(
+            anim.animatables[0].target.dataset.photoId,
+            10
+          );
+
+          const photoElement = this.photos.get(photoId);
+
+          if (!photoElement) {
+            throw new Error("Photo ID does not exist");
+          }
+
+          photoElement.animationActive = false;
+          this.photos.set(photoId, photoElement);
+        }
+      },
+    });
   }
 
   // Create an element to display the background photo in
@@ -182,8 +184,11 @@ export default class slideshowView {
 
       photo.element.style.zIndex = "999";
 
+      // Remove existing animation
+      anime.remove(photo.element);
+
       // Animate photo and zoom to center of screen
-      anime({
+      const newAnimation = anime({
         targets: photo.element,
         scale: 2,
         top: `${
@@ -197,6 +202,10 @@ export default class slideshowView {
         duration: 2000,
       });
 
+      // Store new animation
+      photo.animation = newAnimation;
+      this.photos.set(id, photo);
+
       this.highlightedPhoto = photo;
     } else {
       // Resume all photo animations and remove highlight animation
@@ -206,6 +215,10 @@ export default class slideshowView {
       this.photos.forEach((value: PhotoReference) => {
         value.animation?.play();
       });
+
+      // Start new animation to continue slideshow for this photo
+      photo.animation = this.createSlideAnimation(photo.element);
+      this.photos.set(id, photo);
     }
   }
 }
