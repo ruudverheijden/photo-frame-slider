@@ -1,4 +1,4 @@
-import anime from "animejs";
+import anime, { AnimeInstance } from "animejs";
 import { Photo, PhotoReference } from "../model/models";
 
 export default class backgroundView {
@@ -7,6 +7,8 @@ export default class backgroundView {
   private photoA: PhotoReference;
 
   private photoB: PhotoReference;
+
+  private activePhotoA: boolean = true;
 
   /**
    * Creates an instance of backgroundView.
@@ -54,17 +56,19 @@ export default class backgroundView {
       throw new Error("Invalid photo source");
     }
 
-    // Toggle photos based on whether animation is still running
-    if (!this.photoA.animation) {
+    // Toggle photos every run to make the photos fade from one to the next
+    if (this.activePhotoA) {
       this.photoA.element.style.backgroundImage = `url("${photo?.src}")`;
       this.photoA.element.style.opacity = "0";
 
-      this.photoA.animation = anime({
-        targets: this.photoA.element,
-        opacity: 1,
-        easing: "easeInOutSine",
-        duration: 10000,
-      });
+      this.photoA.element.style.zIndex = "initial";
+      this.photoB.element.style.zIndex = "-1";
+
+      this.photoA.animation = backgroundView.createSlideAnimation(
+        this.photoA.element
+      );
+
+      this.activePhotoA = false;
 
       // Remove animation reference after its finishes
       this.photoA.animation.finished.then(() => {
@@ -74,17 +78,36 @@ export default class backgroundView {
       this.photoB.element.style.backgroundImage = `url("${photo?.src}")`;
       this.photoB.element.style.opacity = "0";
 
-      this.photoB.animation = anime({
-        targets: this.photoA.element,
-        opacity: 1,
-        easing: "easeInOutSine",
-        duration: 10000,
-      });
+      this.photoA.element.style.zIndex = "-1";
+      this.photoB.element.style.zIndex = "initial";
+
+      this.photoB.animation = backgroundView.createSlideAnimation(
+        this.photoB.element
+      );
+      this.activePhotoA = true;
 
       // Remove animation reference after its finishes
       this.photoB.animation.finished.then(() => {
         delete this.photoB.animation;
       });
     }
+  }
+
+  /*
+   * Create a fade animation
+   *
+   * @private
+   * @static
+   * @param {HTMLElement} element Reference to DOM element of the background photo
+   * @returns {AnimeInstance} Returns an instance of the Animejs animation
+   * @memberof backgroundView
+   */
+  private static createSlideAnimation(element: HTMLElement): AnimeInstance {
+    return anime({
+      targets: element,
+      opacity: 1,
+      easing: "easeInOutSine",
+      duration: 3000,
+    });
   }
 }
