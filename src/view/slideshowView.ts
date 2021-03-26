@@ -36,7 +36,7 @@ export default class slideshowView {
       }
 
       // Start the animation if its not yet running
-      if (!this.photos.get(id)?.animationActive) {
+      if (!this.photos.get(id)?.animation) {
         this.setPhotoStartPosition(id);
         this.animatePhoto(id);
       }
@@ -67,18 +67,18 @@ export default class slideshowView {
       throw new Error("Missing html element");
     }
 
-    // Restart animation if it was already created before on this photo
-    if (photoReference.animation) {
-      photoReference.animation.restart();
-    } else {
-      const animation = this.createSlideAnimation(photoReference?.element);
+    const animation = this.createSlideAnimation(photoReference?.element);
 
-      // Store animation reference
-      photoReference.animation = animation;
-    }
-    // Store that animation is running
-    photoReference.animationActive = true;
+    // Store animation reference
+    photoReference.animation = animation;
     this.photos.set(id, photoReference);
+
+    // Remove animation from photo Map after its finishes
+    animation.finished.then(() => {
+      delete photoReference.animation;
+      this.photos.set(id, photoReference);
+      anime.remove(photoReference.element);
+    });
   }
 
   // Create a slide animation
@@ -92,23 +92,6 @@ export default class slideshowView {
       easing: "easeInOutSine",
       duration: randomizeNumber(10000, 2000),
       delay: randomizeNumber(1000, 1000),
-      complete: (anim) => {
-        if (anim.animatables[0]?.target?.dataset?.photoId) {
-          const photoId = parseInt(
-            anim.animatables[0].target.dataset.photoId,
-            10
-          );
-
-          const photoElement = this.photos.get(photoId);
-
-          if (!photoElement) {
-            throw new Error("Photo ID does not exist");
-          }
-
-          photoElement.animationActive = false;
-          this.photos.set(photoId, photoElement);
-        }
-      },
     });
   }
 
@@ -153,6 +136,7 @@ export default class slideshowView {
 
     photoElement.style.left = `-${photoElement.offsetWidth}px`;
     photoElement.style.top = `${randomPosition + randomizeNumber(0, 50)}px`;
+    photoElement.style.transform = "none";
   }
 
   // Pause animation of all photos and highlight specific photo
@@ -166,7 +150,7 @@ export default class slideshowView {
     if (!this.highlightedPhoto) {
       // Pause all currently animated photos and start highlight animation
       this.photos.forEach((value: PhotoReference) => {
-        if (value.animationActive && !value.animation?.paused) {
+        if (value.animation && !value.animation?.paused) {
           value.animation?.pause();
         }
       });
