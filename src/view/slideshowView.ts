@@ -7,12 +7,15 @@ export default class slideshowView {
 
   private backgroundElement: HTMLElement;
 
-  private backgroundAnimation: AnimeInstance | undefined;
-
   private highlightedPhoto: PhotoReference | undefined;
 
   private photos: Map<number, PhotoReference>;
 
+  /**
+   * Creates an instance of slideshowView.
+   * @param {(HTMLElement | null)} container Reference to container DOM element
+   * @memberof slideshowView
+   */
   constructor(container: HTMLElement | null) {
     if (!container) {
       throw new Error("Invalid Slideshow container HTML element");
@@ -23,7 +26,14 @@ export default class slideshowView {
     this.photos = new Map();
   }
 
-  // Add a photo to the slideshow and start the animation
+  /**
+   * Add a photo to the slideshow and start the animation
+   *
+   * @param {number} id ID of the photo
+   * @param {string} src Source path to photo
+   * @param {(string | undefined)} title Optional title of the photo
+   * @memberof slideshowView
+   */
   async addPhoto(id: number, src: string, title: string | undefined) {
     // Don't add photos when highlight is active
     if (!this.highlightedPhoto) {
@@ -43,7 +53,15 @@ export default class slideshowView {
     }
   }
 
-  // Promise to create new photo html element
+  /**
+   * Create a new photo html element and add it to the container
+   *
+   * @private
+   * @param {number} id ID of the photo
+   * @param {string} src Source path of the image
+   * @returns {Promise<HTMLElement>} Return the newly created HTML element async
+   * @memberof slideshowView
+   */
   private createPhotoElement(id: number, src: string): Promise<HTMLElement> {
     return new Promise((resolve, reject) => {
       const newElement = document.createElement("img");
@@ -59,7 +77,12 @@ export default class slideshowView {
     });
   }
 
-  // Create animation for photo
+  /**
+   * Create animation for a photo
+   *
+   * @param {number} id ID of the photo
+   * @memberof slideshowView
+   */
   animatePhoto(id: number): void {
     const photoReference = this.photos.get(id);
 
@@ -81,8 +104,15 @@ export default class slideshowView {
     });
   }
 
-  // Create a slide animation
-  private createSlideAnimation(element: HTMLElement) {
+  /**
+   * Create a slide animation
+   *
+   * @private
+   * @param {HTMLElement} element Reference to DOM element of the photo
+   * @returns {AnimeInstance} Returns an instance of the Animejs animation
+   * @memberof slideshowView
+   */
+  private createSlideAnimation(element: HTMLElement): AnimeInstance {
     return anime({
       targets: element,
       // Make sure photo ends out of the container, even if it's rotated
@@ -95,7 +125,13 @@ export default class slideshowView {
     });
   }
 
-  // Create an element to display the background photo in
+  /**
+   * Create an element to display the background photo in
+   *
+   * @private
+   * @returns {HTMLElement} Reference to the newly created DOM element
+   * @memberof slideshowView
+   */
   private createBackgroundElement(): HTMLElement {
     const newElement = document.createElement("div");
     newElement.className = "background-photo";
@@ -103,7 +139,11 @@ export default class slideshowView {
     return newElement;
   }
 
-  // Set background using a random photo that is already in the photos list
+  /**
+   * Set background using a random photo that is already in the photos list
+   *
+   * @memberof slideshowView
+   */
   setRandomBackgroundPhoto(): void {
     const randomId: number = Math.floor(Math.random() * this.photos.size);
     const photo = this.photos.get(randomId);
@@ -112,7 +152,7 @@ export default class slideshowView {
       this.backgroundElement.style.backgroundImage = `url("${photo?.src}")`;
       this.backgroundElement.style.opacity = "0";
 
-      this.backgroundAnimation = anime({
+      anime({
         targets: this.backgroundElement,
         opacity: 1,
         easing: "easeInOutSine",
@@ -121,7 +161,13 @@ export default class slideshowView {
     }
   }
 
-  // Define photo start position by applying some randomisation
+  /**
+   * Define photo start position by applying some randomisation
+   *
+   * @private
+   * @param {number} id ID of the photo
+   * @memberof slideshowView
+   */
   private setPhotoStartPosition(id: number): void {
     const photoElement = this.photos.get(id)?.element;
 
@@ -139,7 +185,13 @@ export default class slideshowView {
     photoElement.style.transform = "none";
   }
 
-  // Pause animation of all photos and highlight specific photo
+  /**
+   * Pause animation of all photos and highlight specific photo
+   *
+   * @private
+   * @param {number} id ID of the photo
+   * @memberof slideshowView
+   */
   private highlightPhoto(id: number) {
     const photo = this.photos.get(id);
 

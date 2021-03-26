@@ -9,7 +9,13 @@ export default class slideshowModel {
     this.photoList = [];
   }
 
-  // Load the list of photos async from the specified path
+  /**
+   * Load the list of photos async from the specified path
+   *
+   * @param {string} photoPath Path to the photos.json file listing all photos
+   * @returns
+   * @memberof slideshowModel
+   */
   public async loadPhotoList(photoPath: string) {
     this.photoPath = photoPath;
 
@@ -34,7 +40,12 @@ export default class slideshowModel {
       });
   }
 
-  // Return a list of with IDs of all photos
+  /**
+   * Return a list of with IDs of all photos
+   *
+   * @returns {number[]} Returns an array of all IDs
+   * @memberof slideshowModel
+   */
   getPhotoListIds(): number[] {
     const photoIds: number[] = [];
     for (let i = 1; i <= this.photoList.length; i += 1) {
@@ -43,7 +54,13 @@ export default class slideshowModel {
     return photoIds;
   }
 
-  // Get a specific photo based on it ID
+  /**
+   * Get a specific photo based on it ID
+   *
+   * @param {number} id ID of the photo
+   * @returns {Photo}
+   * @memberof slideshowModel
+   */
   getPhotoById(id: number): Photo {
     return this.photoList[id];
   }

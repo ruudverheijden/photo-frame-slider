@@ -13,6 +13,12 @@ export default class slideshowController {
 
   private intervalCounter: number = 0;
 
+  /**
+   * Creates an instance of slideshowController.
+   * @param {slideshowModel} model Reference to instance of slideshowModel
+   * @param {slideshowView} view Reference to instance of slideshowView
+   * @memberof slideshowController
+   */
   constructor(model: slideshowModel, view: slideshowView) {
     this.model = model;
     this.view = view;
@@ -21,7 +27,13 @@ export default class slideshowController {
     this.start();
   }
 
-  // Get the next photo based on index counter
+  /**
+   * Get the next photo based on index counter
+   *
+   * @private
+   * @returns {PhotoWithId}
+   * @memberof slideshowController
+   */
   private getNextPhoto(): PhotoWithId {
     const nextPhoto = this.model.getPhotoById(this.photoIdsIndexCounter);
     const result = { photo: nextPhoto, id: this.photoIdsIndexCounter };

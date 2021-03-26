@@ -1,4 +1,12 @@
-// Randomise number with a maximum deviation, defaults to convert to integer
+/**
+ * Randomise number with a maximum deviation, defaults to convert to integer
+ *
+ * @export
+ * @param {number} number Number to which maxDeviation randomisation is applied
+ * @param {number} maxDeviation Maximum deviation (positive and negative) in generating the random number
+ * @param {boolean} [toInteger=true] Convert randomised number to integer
+ * @returns {number}
+ */
 export default function randomizeNumber(
   number: number,
   maxDeviation: number,
