@@ -5,8 +5,6 @@ import { PhotoReference } from "../model/models";
 export default class slideshowView {
   private container: HTMLElement;
 
-  private backgroundElement: HTMLElement;
-
   private highlightedPhoto: PhotoReference | undefined;
 
   private photos: Map<number, PhotoReference>;
@@ -22,7 +20,6 @@ export default class slideshowView {
     }
 
     this.container = container;
-    this.backgroundElement = this.createBackgroundElement();
     this.photos = new Map();
   }
 
@@ -123,42 +120,6 @@ export default class slideshowView {
       duration: randomizeNumber(10000, 2000),
       delay: randomizeNumber(1000, 1000),
     });
-  }
-
-  /**
-   * Create an element to display the background photo in
-   *
-   * @private
-   * @returns {HTMLElement} Reference to the newly created DOM element
-   * @memberof slideshowView
-   */
-  private createBackgroundElement(): HTMLElement {
-    const newElement = document.createElement("div");
-    newElement.className = "background-photo";
-    this.container.appendChild(newElement);
-    return newElement;
-  }
-
-  /**
-   * Set background using a random photo that is already in the photos list
-   *
-   * @memberof slideshowView
-   */
-  setRandomBackgroundPhoto(): void {
-    const randomId: number = Math.floor(Math.random() * this.photos.size);
-    const photo = this.photos.get(randomId);
-
-    if (photo?.src) {
-      this.backgroundElement.style.backgroundImage = `url("${photo?.src}")`;
-      this.backgroundElement.style.opacity = "0";
-
-      anime({
-        targets: this.backgroundElement,
-        opacity: 1,
-        easing: "easeInOutSine",
-        duration: 10000,
-      });
-    }
   }
 
   /**

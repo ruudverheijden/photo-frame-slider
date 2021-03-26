@@ -1,21 +1,30 @@
 import "./css/styles.css";
-import SlideshowModel from "./model/slideshowModel";
+import PhotoModel from "./model/photoModel";
 import SlideshowView from "./view/slideshowView";
 import SlideshowController from "./controller/slideshowController";
+import BackgroundView from "./view/backgroundView";
+import BackgroundController from "./controller/backgroundController";
 
 /**
- * Initiate slideshow via function since async/await is not allowed at top level
+ * Initiate photo model via function since async/await is not allowed at top level
  *
- * @returns {Promise<SlideshowController>}
+ * @returns {Promise<PhotoModel>}
  */
-async function initSlideshow(): Promise<SlideshowController> {
-  const slideshowModel = new SlideshowModel();
-  await slideshowModel.loadPhotoList("./photos/");
+async function init() {
+  const photoModel = new PhotoModel();
+  await photoModel.loadPhotoList("./photos/");
 
-  return new SlideshowController(
-    slideshowModel,
-    new SlideshowView(document.getElementById("container"))
+  // eslint-disable-next-line no-unused-vars
+  const slideshow = new SlideshowController(
+    photoModel,
+    new SlideshowView(document.getElementById("slideshow-container"))
+  );
+
+  // eslint-disable-next-line no-unused-vars
+  const background = new BackgroundController(
+    photoModel,
+    new BackgroundView(document.getElementById("background-container"))
   );
 }
 
-initSlideshow();
+init();

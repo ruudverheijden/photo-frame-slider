@@ -1,6 +1,6 @@
 import { Photo } from "./models";
 
-export default class slideshowModel {
+export default class photoModel {
   private photoList: Photo[];
 
   private photoPath: string | undefined;
@@ -14,7 +14,7 @@ export default class slideshowModel {
    *
    * @param {string} photoPath Path to the photos.json file listing all photos
    * @returns
-   * @memberof slideshowModel
+   * @memberof photoModel
    */
   public async loadPhotoList(photoPath: string) {
     this.photoPath = photoPath;
@@ -44,7 +44,7 @@ export default class slideshowModel {
    * Return a list of with IDs of all photos
    *
    * @returns {number[]} Returns an array of all IDs
-   * @memberof slideshowModel
+   * @memberof photoModel
    */
   getPhotoListIds(): number[] {
     const photoIds: number[] = [];
@@ -59,7 +59,7 @@ export default class slideshowModel {
    *
    * @param {number} id ID of the photo
    * @returns {Photo}
-   * @memberof slideshowModel
+   * @memberof photoModel
    */
   getPhotoById(id: number): Photo {
     return this.photoList[id];

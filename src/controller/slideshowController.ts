@@ -1,25 +1,23 @@
 import { PhotoWithId } from "../model/models";
-import slideshowModel from "../model/slideshowModel";
-import slideshowView from "../view/slideshowView";
+import PhotoModel from "../model/photoModel";
+import SlideshowView from "../view/slideshowView";
 
 export default class slideshowController {
-  private model: slideshowModel;
+  private model: PhotoModel;
 
-  private view: slideshowView;
+  private view: SlideshowView;
 
   private photoIds: number[] = [];
 
   private photoIdsIndexCounter: number = 0;
 
-  private intervalCounter: number = 0;
-
   /**
    * Creates an instance of slideshowController.
-   * @param {slideshowModel} model Reference to instance of slideshowModel
+   * @param {photoModel} model Reference to instance of photoModel
    * @param {slideshowView} view Reference to instance of slideshowView
    * @memberof slideshowController
    */
-  constructor(model: slideshowModel, view: slideshowView) {
+  constructor(model: PhotoModel, view: SlideshowView) {
     this.model = model;
     this.view = view;
     this.photoIds = this.model.getPhotoListIds();
@@ -60,13 +58,6 @@ export default class slideshowController {
           nextPhoto.photo.title
         );
       }
-
-      // Change background every 5 intervals
-      if (this.intervalCounter === 1 || this.intervalCounter % 5 === 0) {
-        this.view.setRandomBackgroundPhoto();
-      }
-
-      this.intervalCounter += 1;
     }, 2000);
   }
 }
