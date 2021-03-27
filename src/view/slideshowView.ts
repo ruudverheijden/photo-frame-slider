@@ -36,7 +36,7 @@ export default class slideshowView {
     if (!this.highlightedPhoto) {
       if (!this.photos.has(id)) {
         // Await for the image element to have loaded
-        const element = await this.createPhotoElement(id, src);
+        const element = await this.createPhotoElement(id, src, title);
 
         // Store element reference for quick reference
         this.photos.set(id, { src, title, element });
@@ -51,7 +51,7 @@ export default class slideshowView {
   }
 
   /**
-   * Create a new photo html element and add it to the container
+   * Create a new div and img element for the photo and add it to the container
    *
    * @private
    * @param {number} id ID of the photo
@@ -59,18 +59,33 @@ export default class slideshowView {
    * @returns {Promise<HTMLElement>} Return the newly created HTML element async
    * @memberof slideshowView
    */
-  private createPhotoElement(id: number, src: string): Promise<HTMLElement> {
+  private createPhotoElement(
+    id: number,
+    src: string,
+    title: string | undefined
+  ): Promise<HTMLElement> {
     return new Promise((resolve, reject) => {
-      const newElement = document.createElement("img");
-      newElement.src = src;
-      newElement.dataset.photoId = `${id}`;
-      newElement.className = "photo";
-      newElement.onload = () => resolve(newElement);
-      newElement.onerror = reject;
-      newElement.onclick = () => {
+      const photoElement = document.createElement("div");
+      photoElement.className = "photo";
+      photoElement.onclick = () => {
         this.highlightPhoto(id);
       };
-      this.container.appendChild(newElement);
+
+      const imgElement = document.createElement("img");
+      imgElement.src = src;
+      imgElement.onload = () => resolve(photoElement);
+      imgElement.onerror = reject;
+
+      photoElement.appendChild(imgElement);
+
+      if (title) {
+        const titleElement = document.createElement("div");
+        titleElement.className = "title";
+        titleElement.innerHTML = title;
+        photoElement.appendChild(titleElement);
+      }
+
+      this.container.appendChild(photoElement);
     });
   }
 

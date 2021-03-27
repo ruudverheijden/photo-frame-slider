@@ -29,10 +29,23 @@ html {
 .photo {
   position: absolute;
   top: -1000vw;
-  width: 40vw;
-  background-color: #ddd;
+  background-color: #fff;
   border: 1vw solid white;
   box-shadow: 0 0 1.5vw rgba(0, 0, 0, 0.4);
   -moz-box-shadow: 0 0 1.5vw rgba(0, 0, 0, 0.4);
   -webkit-box-shadow: 0 0 1.5vw rgba(0, 0, 0, 0.4);
+  line-height: 0;
+}
+
+.photo img {
+  width: 40vw;
+}
+
+.photo .title {
+  width: 100%;
+  padding-top: 1vw;
+  font-size: 1.8em;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  text-align: center;
+  line-height: normal;
 }
