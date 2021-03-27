@@ -56,6 +56,7 @@ export default class slideshowView {
    * @private
    * @param {number} id ID of the photo
    * @param {string} src Source path of the image
+   * @param {string | undefined} title Optional title text
    * @returns {Promise<HTMLElement>} Return the newly created HTML element async
    * @memberof slideshowView
    */
@@ -71,12 +72,20 @@ export default class slideshowView {
         this.highlightPhoto(id);
       };
 
+      const imgContainerElement = document.createElement("div");
+      imgContainerElement.className = "img-container";
+
+      const imgOverlayElement = document.createElement("div");
+      imgOverlayElement.className = "img-overlay";
+
       const imgElement = document.createElement("img");
       imgElement.src = src;
       imgElement.onload = () => resolve(photoElement);
       imgElement.onerror = reject;
 
-      photoElement.appendChild(imgElement);
+      imgContainerElement.appendChild(imgOverlayElement);
+      imgContainerElement.appendChild(imgElement);
+      photoElement.appendChild(imgContainerElement);
 
       if (title) {
         const titleElement = document.createElement("div");

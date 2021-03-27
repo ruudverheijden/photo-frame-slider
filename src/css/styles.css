@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
+
 body,
 html {
   margin: 0;
@@ -37,15 +39,29 @@ html {
   line-height: 0;
 }
 
-.photo img {
-  width: 40vw;
-}
-
 .photo .title {
   width: 100%;
   padding-top: 1vw;
   font-size: 1.8em;
-  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  font-family: 'Permanent Marker', cursive;
   text-align: center;
   line-height: normal;
+}
+
+.photo .img-container {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  margin: 0;
+}
+
+.photo .img-overlay {
+  box-shadow: inset 0 0 40px 15px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+
+.photo img {
+  width: 40vw;
 }
