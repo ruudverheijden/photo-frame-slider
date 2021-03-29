@@ -58,6 +58,6 @@ export default class slideshowController {
           nextPhoto.photo.title
         );
       }
-    }, 2000);
+    }, 8000);
   }
 }

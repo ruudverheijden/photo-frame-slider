@@ -141,7 +141,7 @@ export default class slideshowView {
       rotate: `${randomizeNumber(0, 10)}deg`,
       scale: randomizeNumber(1.0, 0.3, false),
       easing: "easeInOutSine",
-      duration: randomizeNumber(10000, 2000),
+      duration: randomizeNumber(30000, 2000),
       delay: randomizeNumber(1000, 1000),
     });
   }
