@@ -1,8 +1,10 @@
 import anime, { AnimeInstance } from "animejs";
-import { Photo, PhotoReference } from "../model/models";
+import { Config, Photo, PhotoReference } from "../model/models";
 
 export default class backgroundView {
   private container: HTMLElement;
+
+  private config: Config;
 
   private photoA: PhotoReference;
 
@@ -13,14 +15,16 @@ export default class backgroundView {
   /**
    * Creates an instance of backgroundView.
    * @param {(HTMLElement | null)} container Reference to container DOM element
+   * @param {Config} config Reference to config
    * @memberof backgroundView
    */
-  constructor(container: HTMLElement | null) {
+  constructor(container: HTMLElement | null, config: Config) {
     if (!container) {
       throw new Error("Invalid Background container HTML element");
     }
 
     this.container = container;
+    this.config = config;
     this.photoA = {
       src: "",
       element: this.createBackgroundElement(),
@@ -64,9 +68,7 @@ export default class backgroundView {
       this.photoA.element.style.zIndex = "initial";
       this.photoB.element.style.zIndex = "-1";
 
-      this.photoA.animation = backgroundView.createSlideAnimation(
-        this.photoA.element
-      );
+      this.photoA.animation = this.createSlideAnimation(this.photoA.element);
 
       this.activePhotoA = false;
 
@@ -81,9 +83,7 @@ export default class backgroundView {
       this.photoA.element.style.zIndex = "-1";
       this.photoB.element.style.zIndex = "initial";
 
-      this.photoB.animation = backgroundView.createSlideAnimation(
-        this.photoB.element
-      );
+      this.photoB.animation = this.createSlideAnimation(this.photoB.element);
       this.activePhotoA = true;
 
       // Remove animation reference after its finishes
@@ -102,12 +102,12 @@ export default class backgroundView {
    * @returns {AnimeInstance} Returns an instance of the Animejs animation
    * @memberof backgroundView
    */
-  private static createSlideAnimation(element: HTMLElement): AnimeInstance {
+  private createSlideAnimation(element: HTMLElement): AnimeInstance {
     return anime({
       targets: element,
       opacity: 1,
       easing: "easeInOutSine",
-      duration: 3000,
+      duration: this.config.backgroundFadeDuration * 1000,
     });
   }
 }

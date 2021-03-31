@@ -1,9 +1,11 @@
 import anime, { AnimeInstance } from "animejs";
 import randomizeNumber from "../helper/helpers";
-import { PhotoReference } from "../model/models";
+import { PhotoReference, Config } from "../model/models";
 
 export default class slideshowView {
   private container: HTMLElement;
+
+  private config: Config;
 
   private highlightedPhoto: PhotoReference | undefined;
 
@@ -14,12 +16,13 @@ export default class slideshowView {
    * @param {(HTMLElement | null)} container Reference to container DOM element
    * @memberof slideshowView
    */
-  constructor(container: HTMLElement | null) {
+  constructor(container: HTMLElement | null, config: Config) {
     if (!container) {
       throw new Error("Invalid Slideshow container HTML element");
     }
 
     this.container = container;
+    this.config = config;
     this.photos = new Map();
   }
 
@@ -141,7 +144,7 @@ export default class slideshowView {
       rotate: `${randomizeNumber(0, 10)}deg`,
       scale: randomizeNumber(1.0, 0.3, false),
       easing: "easeInOutSine",
-      duration: randomizeNumber(30000, 2000),
+      duration: randomizeNumber(this.config.photoSlideDuration * 1000, 2000),
       delay: randomizeNumber(1000, 1000),
     });
   }

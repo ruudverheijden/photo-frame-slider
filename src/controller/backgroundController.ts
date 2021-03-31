@@ -1,4 +1,4 @@
-import { Photo } from "../model/models";
+import { Photo, Config } from "../model/models";
 import PhotoModel from "../model/photoModel";
 import BackgroundView from "../view/backgroundView";
 
@@ -7,15 +7,18 @@ export default class slideshowController {
 
   private view: BackgroundView;
 
+  private config: Config;
+
   /**
    * Creates an instance of backgroundController.
    * @param {photoModel} model Reference to instance of photoModel
    * @param {backgroundView} view Reference to instance of backgroundView
    * @memberof slideshowController
    */
-  constructor(model: PhotoModel, view: BackgroundView) {
+  constructor(model: PhotoModel, view: BackgroundView, config: Config) {
     this.model = model;
     this.view = view;
+    this.config = config;
 
     this.start();
   }
@@ -41,6 +44,6 @@ export default class slideshowController {
       if (photo) {
         this.view.setNextBackgroundPhoto(photo);
       }
-    }, 10000);
+    }, this.config.backgroundDuration * 1000);
   }
 }

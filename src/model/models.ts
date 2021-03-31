@@ -14,3 +14,10 @@ export interface PhotoReference extends Photo {
   element: HTMLElement;
   animation?: AnimeInstance;
 }
+
+export interface Config {
+  photoSlideDuration: number; // Time in seconds for sliding a photo from left to right
+  photoAddInterval: number; // Number of seconds after which a new photo is added to the slideshow
+  backgroundDuration: number; // Time in seconds on how long the background photo is shown
+  backgroundFadeDuration: number; // Time in seconds of fading from one background photo to another
+}

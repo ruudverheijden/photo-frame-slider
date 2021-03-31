@@ -1,4 +1,4 @@
-import { PhotoWithId } from "../model/models";
+import { PhotoWithId, Config } from "../model/models";
 import PhotoModel from "../model/photoModel";
 import SlideshowView from "../view/slideshowView";
 
@@ -6,6 +6,8 @@ export default class slideshowController {
   private model: PhotoModel;
 
   private view: SlideshowView;
+
+  private config: Config;
 
   private photoIds: number[] = [];
 
@@ -17,9 +19,10 @@ export default class slideshowController {
    * @param {slideshowView} view Reference to instance of slideshowView
    * @memberof slideshowController
    */
-  constructor(model: PhotoModel, view: SlideshowView) {
+  constructor(model: PhotoModel, view: SlideshowView, config: Config) {
     this.model = model;
     this.view = view;
+    this.config = config;
     this.photoIds = this.model.getPhotoListIds();
 
     this.start();
@@ -58,6 +61,6 @@ export default class slideshowController {
           nextPhoto.photo.title
         );
       }
-    }, 8000);
+    }, this.config.photoAddInterval * 1000);
   }
 }
