@@ -19,7 +19,7 @@ export default class photoModel {
   public async loadPhotoList(photoPath: string) {
     this.photoPath = photoPath;
 
-    return fetch(`${photoPath}/photos.json`)
+    return fetch(`${photoPath}photos.json`)
       .then((response) => {
         return response.json();
       })
@@ -35,7 +35,7 @@ export default class photoModel {
       })
       .catch((error) => {
         throw new Error(
-          `Cannot load photos config from ${photoPath}/photos.json because of: ${error}`
+          `Cannot load photos config from ${photoPath}photos.json because of: ${error}`
         );
       });
   }

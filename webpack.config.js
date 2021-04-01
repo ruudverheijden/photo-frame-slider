@@ -45,7 +45,7 @@ module.exports = {
         },
         {
           from: path.resolve(__dirname, "./example/**"),
-          to: "photos/",
+          to: "photos/[name][ext]",
           globOptions: {
             ignore: ["**/config.json"],
           },
