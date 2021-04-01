@@ -40,8 +40,15 @@ module.exports = {
     new CopyPlugin({
       patterns: [
         {
-          from: path.resolve(__dirname, "./example_photos/**"),
-          to: "photos/[name][ext]",
+          from: path.resolve(__dirname, "./example/config.json"),
+          to: ".",
+        },
+        {
+          from: path.resolve(__dirname, "./example/**"),
+          to: "photos/",
+          globOptions: {
+            ignore: ["**/config.json"],
+          },
         },
       ],
     }),
