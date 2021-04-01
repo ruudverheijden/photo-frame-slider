@@ -5,7 +5,7 @@ export default class configModel {
   config: Config;
 
   constructor() {
-    this.config = configDefaults;
+    this.config = <Config>configDefaults;
   }
 
   /**
@@ -22,11 +22,13 @@ export default class configModel {
       })
       .then((data) => {
         this.config = data;
+        console.log(`Using config: ${JSON.stringify(data)}`);
       })
       .catch(() => {
         console.log(
           `Cannot load config from ${configPath}, using defaults instead`
         );
+        console.log(`Using config: ${JSON.stringify(this.config)}`);
       });
   }
 }
