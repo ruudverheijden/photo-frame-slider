@@ -1,4 +1,3 @@
-import anime, { AnimeInstance } from "animejs";
 import randomizeNumber from "../helper/helpers";
 import { PhotoReference, Config } from "../model/models";
 
@@ -42,11 +41,11 @@ export default class slideshowView {
         const element = await this.createPhotoElement(id, src, title);
 
         // Store element reference for quick reference
-        this.photos.set(id, { src, title, element });
+        this.photos.set(id, { src, title, element, animationActive: false });
       }
 
       // Start the animation if its not yet running
-      if (!this.photos.get(id)?.animation) {
+      if (!this.photos.get(id)?.animationActive) {
         this.setPhotoStartPosition(id);
         this.animatePhoto(id);
       }
@@ -72,7 +71,7 @@ export default class slideshowView {
       const photoElement = document.createElement("div");
       photoElement.className = "photo";
       photoElement.onclick = () => {
-        this.highlightPhoto(id);
+        // this.highlightPhoto(id);
       };
 
       const imgContainerElement = document.createElement("div");
@@ -114,17 +113,22 @@ export default class slideshowView {
       throw new Error("Missing html element");
     }
 
-    const animation = this.createSlideAnimation(photoReference?.element);
+    photoReference.element = this.createSlideAnimation(photoReference?.element);
+    photoReference.animationActive = true;
 
     // Store animation reference
-    photoReference.animation = animation;
     this.photos.set(id, photoReference);
 
-    // Remove animation from photo Map after its finishes
-    animation.finished.then(() => {
-      delete photoReference.animation;
-      this.photos.set(id, photoReference);
-      anime.remove(photoReference.element);
+    // Cleanup animation after is finished and set back active state
+    photoReference.element.addEventListener("transitionend", () => {
+      const photo = this.photos.get(id);
+      if (photo) {
+        slideshowView.removeAnimation(photo.element);
+        photo.animationActive = false;
+        this.photos.set(id, photo);
+      }
+
+      console.log("Transition ended");
     });
   }
 
@@ -133,20 +137,40 @@ export default class slideshowView {
    *
    * @private
    * @param {HTMLElement} element Reference to DOM element of the photo
-   * @returns {AnimeInstance} Returns an instance of the Animejs animation
+   * @returns {HTMLElement} Returns the modified HTML element containing the CSS animations / transitions
    * @memberof slideshowView
    */
-  private createSlideAnimation(element: HTMLElement): AnimeInstance {
-    return anime({
-      targets: element,
-      // Make sure photo ends out of the container, even if it's rotated
-      translateX: `${this.container.offsetWidth + element.offsetWidth * 1.3}px`,
-      rotate: `${randomizeNumber(0, 10)}deg`,
-      scale: randomizeNumber(1.0, 0.3, false),
-      easing: "easeInOutSine",
-      duration: randomizeNumber(this.config.photoSlideDuration * 1000, 2000),
-      delay: randomizeNumber(1000, 1000),
-    });
+  private createSlideAnimation(element: HTMLElement): HTMLElement {
+    const animatedElement = element;
+    animatedElement.style.transitionProperty = "transform";
+    animatedElement.style.transitionTimingFunction = "ease-in-out";
+    animatedElement.style.transitionDelay = `${randomizeNumber(1, 1)}`;
+    animatedElement.style.transitionDuration = `
+      ${randomizeNumber(this.config.photoSlideDuration, 3)}s
+    `;
+    animatedElement.style.transform = `
+      translateX(${this.container.offsetWidth + element.offsetWidth * 1.3}px)
+      rotate(${randomizeNumber(0, 10)}deg)
+      scale(${randomizeNumber(1.0, 0.3, false)})
+    `;
+
+    return animatedElement;
+  }
+
+  /**
+   * Remove any CSS animations / transitions for an HTML element
+   *
+   * @private
+   * @static
+   * @param {HTMLElement} element Reference to DOM element of the photo
+   * @returns {HTMLElement} Returns the modified HTML element containing no CSS animations / transitions
+   * @memberof slideshowView
+   */
+  private static removeAnimation(element: HTMLElement): HTMLElement {
+    const animatedElement = element;
+    animatedElement.style.transition = "initial";
+    animatedElement.style.transform = "none";
+    return animatedElement;
   }
 
   /**
@@ -183,41 +207,21 @@ export default class slideshowView {
   private highlightPhoto(id: number) {
     const photo = this.photos.get(id);
 
-    if (!photo || !photo.animation) {
+    if (!photo || !photo.animationActive) {
       throw new Error("Unknown photo ID");
     }
 
     if (!this.highlightedPhoto) {
       // Pause all currently animated photos and start highlight animation
       this.photos.forEach((value: PhotoReference) => {
-        if (value.animation && !value.animation?.paused) {
-          value.animation?.pause();
-        }
+        slideshowView.pauseAnimation(value.element);
       });
-
-      photo.element.style.zIndex = "999";
 
       // Remove existing animation
-      anime.remove(photo.element);
+      slideshowView.removeAnimation(photo.element);
 
       // Animate photo and zoom to center of screen
-      const newAnimation = anime({
-        targets: photo.element,
-        scale: 2,
-        top: `${
-          this.container.offsetHeight / 2 - photo.element.offsetHeight / 2
-        }px`,
-        left: `${
-          this.container.offsetWidth / 2 - photo.element.offsetWidth / 2
-        }px`,
-        translateX: 0,
-        easing: "easeInOutSine",
-        duration: 2000,
-      });
-
-      // Store new animation
-      photo.animation = newAnimation;
-      this.photos.set(id, photo);
+      photo.element = this.animatePhotoHighlight(photo.element);
 
       this.highlightedPhoto = photo;
     } else {
@@ -226,12 +230,67 @@ export default class slideshowView {
       this.highlightedPhoto = undefined;
 
       this.photos.forEach((value: PhotoReference) => {
-        value.animation?.play();
+        slideshowView.resumeAnimation(value.element);
       });
 
       // Start new animation to continue slideshow for this photo
-      photo.animation = this.createSlideAnimation(photo.element);
-      this.photos.set(id, photo);
+      photo.element = this.createSlideAnimation(photo.element);
     }
+
+    // Store updated photo element
+    this.photos.set(id, photo);
+  }
+
+  /**
+   * Add CSS animation to element to move photo to center of the screen and scale
+   *
+   * @private
+   * @param {HTMLElement} element
+   * @returns {HTMLElement}
+   * @memberof slideshowView
+   */
+  private animatePhotoHighlight(element: HTMLElement): HTMLElement {
+    const animatedElement = element;
+    animatedElement.style.zIndex = "999";
+    animatedElement.style.transitionProperty = "transform, top, left";
+    animatedElement.style.transitionTimingFunction = "ease-in-out";
+    animatedElement.style.transitionDuration = "2s";
+    animatedElement.style.top = `${
+      this.container.offsetHeight / 2 - element.offsetHeight / 2
+    }px`;
+    animatedElement.style.left = `${
+      this.container.offsetWidth / 2 - element.offsetWidth / 2
+    }px`;
+    animatedElement.style.transform = "scale(2)";
+
+    return animatedElement;
+  }
+
+  /**
+   * Pause the CSS animation / transition if it is running
+   *
+   * @private
+   * @param {HTMLElement} element Reference to DOM element of the photo
+   * @returns {HTMLElement} Returns the modified HTML element containing no CSS animations / transitions
+   * @memberof slideshowView
+   */
+  private static pauseAnimation(element: HTMLElement): HTMLElement {
+    const animatedElement = element;
+    // TODO: pause animation
+    return animatedElement;
+  }
+
+  /**
+   * Resume the CSS animation / transition if it is paused
+   *
+   * @private
+   * @param {HTMLElement} element Reference to DOM element of the photo
+   * @returns {HTMLElement} Returns the modified HTML element containing no CSS animations / transitions
+   * @memberof slideshowView
+   */
+   private static resumeAnimation(element: HTMLElement): HTMLElement {
+    const animatedElement = element;
+    // TODO: resume animation
+    return animatedElement;
   }
 }
