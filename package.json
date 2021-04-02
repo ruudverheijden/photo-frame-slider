@@ -5,6 +5,7 @@
   "author": "Ruud Verheijden",
   "scripts": {
     "start": "webpack serve --open",
+    "serve-network": "webpack serve --open --host 0.0.0.0",
     "build": "webpack build",
     "build-docker": "webpack build ; docker build -t photo-frame-slider:${npm_package_version} ."
   },
