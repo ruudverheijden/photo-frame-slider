@@ -22,13 +22,13 @@ export default class configModel {
       })
       .then((data) => {
         this.config = data;
-        console.log(`Using config: ${JSON.stringify(data)}`);
+        console.log(`Using config from file: ${JSON.stringify(data)}`);
       })
       .catch(() => {
         console.log(
           `Cannot load config from ${configPath}, using defaults instead`
         );
-        console.log(`Using config: ${JSON.stringify(this.config)}`);
+        console.log(`Using default config: ${JSON.stringify(this.config)}`);
       });
   }
 }

@@ -288,7 +288,7 @@ export default class slideshowView {
    * @returns {HTMLElement} Returns the modified HTML element containing no CSS animations / transitions
    * @memberof slideshowView
    */
-   private static resumeAnimation(element: HTMLElement): HTMLElement {
+  private static resumeAnimation(element: HTMLElement): HTMLElement {
     const animatedElement = element;
     // TODO: resume animation
     return animatedElement;

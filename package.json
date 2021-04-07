@@ -9,10 +9,6 @@
     "build": "webpack build",
     "build-docker": "webpack build ; docker build -t photo-frame-slider:${npm_package_version} ."
   },
-  "dependencies": {
-    "@types/animejs": "^3.1.2",
-    "animejs": "^3.2.1"
-  },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.17.0",
     "@typescript-eslint/parser": "^4.17.0",
