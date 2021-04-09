@@ -73,12 +73,18 @@ export default class backgroundView {
 
     // Toggle photos every run to make the photos fade from one to the next
     if (this.activePhotoA) {
-      this.removeBackgroundElement(this.photoAId);
+      if (this.photoAId) {
+        this.removeBackgroundElement(this.photoAId);
+      }
+
       const newPhoto = this.createBackgroundElement(photo.src, this.photoAId);
       this.createFadeInAnimation(newPhoto);
       this.activePhotoA = false;
     } else {
-      this.removeBackgroundElement(this.photoBId);
+      if (this.photoBId) {
+        this.removeBackgroundElement(this.photoBId);
+      }
+
       const newPhoto = this.createBackgroundElement(photo.src, this.photoBId);
       this.createFadeInAnimation(newPhoto);
       this.activePhotoA = true;
