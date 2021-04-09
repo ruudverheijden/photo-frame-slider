@@ -23,3 +23,11 @@ npm run build-docker
 // Run Docker image
 docker run --name photoFrameSlider -d -p 8001:80 -v /myPhotoDir:/usr/share/nginx/html/photos:ro photo-frame-slider
 ```
+
+## TODO
+
+- Create backend to:
+  - Resize photos
+  - Serve static files
+  - Serve config file from fixed location
+

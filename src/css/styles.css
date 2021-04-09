@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap");
 
 body,
 html {
@@ -43,7 +43,7 @@ html {
   width: 100%;
   padding-top: 1vw;
   font-size: 1.8em;
-  font-family: 'Permanent Marker', cursive;
+  font-family: "Permanent Marker", cursive;
   text-align: center;
   line-height: normal;
 }
@@ -64,4 +64,15 @@ html {
 
 .photo img {
   width: 40vw;
+}
+
+/* Animation */
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
