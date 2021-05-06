@@ -40,14 +40,11 @@ export default class slideshowView {
         const element = await this.createPhotoElement(id, src, title);
 
         // Store element reference for quick reference
-        this.photos.set(id, { src, title, element, animationActive: false });
+        this.photos.set(id, { src, title, element });
       } catch (error) {
         console.log(error);
       }
-    }
 
-    // Start the animation if its not yet running
-    if (!this.photos.get(id)?.animationActive) {
       this.setPhotoStartPosition(id);
       this.animatePhoto(id);
     }
@@ -115,20 +112,17 @@ export default class slideshowView {
     }
 
     photoReference.element = this.createSlideAnimation(photoReference?.element);
-    photoReference.animationActive = true;
 
     // Store animation reference
     this.photos.set(id, photoReference);
 
-    // Cleanup animation after is finished and set back active state
-    // photoReference.element.addEventListener("transitionend", () => {
-    //   const photo = this.photos.get(id);
-    //   if (photo) {
-    //     slideshowView.removeAnimation(photo.element);
-    //     photo.animationActive = false;
-    //     this.photos.set(id, photo);
-    //   }
-    // });
+    // Remove photo element and reference after animation finished
+    photoReference.element.addEventListener("transitionend", () => {
+      if (this.photos.get(id)) {
+        photoReference.element.remove();
+        this.photos.delete(id);
+      }
+    });
   }
 
   /**
@@ -206,7 +200,7 @@ export default class slideshowView {
   private highlightPhoto(id: number) {
     const photo = this.photos.get(id);
 
-    if (!photo || !photo.animationActive) {
+    if (!photo) {
       throw new Error("Unknown photo ID");
     }
 
