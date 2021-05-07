@@ -6,7 +6,7 @@ export default class slideshowView {
 
   private config: Config;
 
-  private highlightedPhoto: PhotoReference | undefined;
+  private highlightedPhotoId: number | undefined;
 
   private photos: Map<number, PhotoReference>;
 
@@ -118,7 +118,7 @@ export default class slideshowView {
 
     // Remove photo element and reference after animation finished
     photoReference.element.addEventListener("transitionend", () => {
-      if (this.photos.get(id)) {
+      if (this.photos.get(id) && id !== this.highlightedPhotoId) {
         photoReference.element.remove();
         this.photos.delete(id);
       }
@@ -198,23 +198,36 @@ export default class slideshowView {
    * @memberof slideshowView
    */
   private highlightPhoto(id: number) {
-    const photo = this.photos.get(id);
+    let photo;
 
-    if (!photo) {
-      throw new Error("Unknown photo ID");
-    }
+    // If no photo is highlighted yet we highlight the clicked photo
+    if (typeof this.highlightedPhotoId !== "number") {
+      photo = this.photos.get(id);
 
-    if (!this.highlightedPhoto) {
+      if (!photo) {
+        throw new Error("Unknown photo ID");
+      }
+
       // Remove existing animation
       slideshowView.removeAnimation(photo.element);
 
       // Animate photo and zoom to center of screen
       photo.element = this.animatePhotoHighlight(photo.element);
-      this.highlightedPhoto = photo;
+      this.highlightedPhotoId = id;
+
+      // Store updated photo element
+      this.photos.set(id, photo);
     } else {
+      // Otherwise we always unhighlight the currently highlighted photo, regardless which photo was clicked
+      photo = this.photos.get(this.highlightedPhotoId);
+
+      if (!photo) {
+        throw new Error("Unknown photo ID");
+      }
+
       // Start new animation to continue slideshow for this photo
       photo.element = this.animatePhotoUnhighlight(photo.element);
-      this.highlightedPhoto = undefined;
+      this.highlightedPhotoId = undefined;
     }
 
     // Store updated photo element
