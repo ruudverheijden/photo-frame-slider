@@ -36,14 +36,26 @@ export default class slideshowController {
     return this.model.getPhotoById(randomId);
   }
 
+  /**
+   * Trigger view to render the background photo
+   *
+   * @private
+   * @memberof slideshowController
+   */
+  private setBackgroundPhoto(): void {
+    const photo = this.getRandomPhoto();
+
+    if (photo) {
+      this.view.setNextBackgroundPhoto(photo);
+    }
+  }
+
   // Rotate background every 10 seconds
   start() {
-    setInterval(() => {
-      const photo = this.getRandomPhoto();
+    this.setBackgroundPhoto(); // Run first time immediately
 
-      if (photo) {
-        this.view.setNextBackgroundPhoto(photo);
-      }
+    setInterval(() => {
+      this.setBackgroundPhoto();
     }, this.config.backgroundDuration * 1000);
   }
 }

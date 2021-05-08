@@ -49,18 +49,30 @@ export default class slideshowController {
     return result;
   }
 
+  /**
+   * Trigger view to render the photo
+   *
+   * @private
+   * @memberof slideshowController
+   */
+  private setPhoto(): void {
+    const nextPhoto = this.getNextPhoto();
+
+    if (nextPhoto) {
+      this.view.addPhoto(
+        nextPhoto.id,
+        nextPhoto.photo.src,
+        nextPhoto.photo.title
+      );
+    }
+  }
+
   // Start the slideshow
   start() {
-    setInterval(() => {
-      const nextPhoto = this.getNextPhoto();
+    this.setPhoto(); // Run first time immediately
 
-      if (nextPhoto) {
-        this.view.addPhoto(
-          nextPhoto.id,
-          nextPhoto.photo.src,
-          nextPhoto.photo.title
-        );
-      }
+    setInterval(() => {
+      this.setPhoto();
     }, this.config.photoAddInterval * 1000);
   }
 }
