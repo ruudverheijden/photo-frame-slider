@@ -53,9 +53,7 @@ export default class backgroundView {
    */
   private removeBackgroundElement(id: string): void {
     const element = document.getElementById(id);
-    if (!element) {
-      console.log(`BackgroundView: Element ${id} could not be removed!`);
-    } else {
+    if (element) {
       this.container.removeChild(element);
     }
   }

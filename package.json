@@ -1,7 +1,7 @@
 {
   "name": "photo-frame-slider",
   "description": "Photo Slideshow",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "author": "Ruud Verheijden",
   "scripts": {
     "start": "webpack serve --open",
